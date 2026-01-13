@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Anonymous Crush gizlilik politikası - Verileriniz nasıl korunur.">
+    <title>Gizlilik Politikası - Anonymous Crush 💕</title>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9224203872571110"
+     crossorigin="anonymous"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #000;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #ddd;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(139, 0, 0, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 0, 0, 0.1) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        nav {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #8b0000;
+            padding: 15px 20px;
+            position: relative;
+            z-index: 100;
+            box-shadow: 0 4px 30px rgba(139, 0, 0, 0.2);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        nav a {
+            color: #ddd;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ff0000, #8b0000);
+            transition: width 0.3s;
+        }
+
+        nav a:hover::after,
+        nav a.active::after {
+            width: 100%;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: #ff0000;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        .main-content {
+            flex: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-header h1 {
+            font-size: 42px;
+            background: linear-gradient(135deg, #ff0000 0%, #ff6b6b 50%, #8b0000 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .page-header p {
+            color: #999;
+            font-size: 18px;
+        }
+
+        .content-section {
+            background: rgba(26, 26, 26, 0.9);
+            backdrop-filter: blur(20px);
+            border: 2px solid #8b0000;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(139, 0, 0, 0.3);
+        }
+
+        .content-section h2 {
+            color: #ff0000;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .content-section h3 {
+            color: #ff4444;
+            font-size: 18px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .content-section p {
+            line-height: 1.8;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+
+        .content-section ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .content-section li {
+            line-height: 1.8;
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+
+        .content-section a {
+            color: #ff0000;
+            text-decoration: none;
+        }
+
+        .content-section a:hover {
+            text-decoration: underline;
+        }
+
+        .highlight {
+            background: rgba(10, 10, 10, 0.8);
+            padding: 20px;
+            border-left: 3px solid #8b0000;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        footer {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 2px solid #8b0000;
+            padding: 35px 20px;
+            text-align: center;
+            color: #999;
+            position: relative;
+            z-index: 100;
+            box-shadow: 0 -4px 30px rgba(139, 0, 0, 0.2);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .footer-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ff0000, #8b0000);
+            transition: width 0.3s;
+        }
+
+        .footer-links a:hover::after {
+            width: 100%;
+        }
+
+        .footer-links a:hover {
+            color: #ff0000;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        .copyright {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        @media (max-width: 600px) {
+            .page-header h1 {
+                font-size: 32px;
+            }
+            
+            .content-section {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Ana Sayfa</a></li>
+            <li><a href="hakkinda.html">Hakkında</a></li>
+            <li><a href="sss.html">SSS</a></li>
+            <li><a href="gizlilik.html" class="active">Gizlilik</a></li>
+            <li><a href="kullanim.html">Kullanım Koşulları</a></li>
+            <li><a href="iletisim.html">İletişim</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1>🔒 Gizlilik Politikası</h1>
+            <p>Verileriniz bizim için önemli</p>
+        </div>
+
+        <div class="content-section">
+            <div class="highlight">
+                <p><strong>Son Güncelleme:</strong> 13 Ocak 2025</p>
+                <p>Bu gizlilik politikası, Anonymous Crush platformunu kullanırken kişisel verilerinizin nasıl işlendiğini açıklar.</p>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>1. Toplanan Bilgiler</h2>
+            
+            <h3>1.1 Mesaj İçeriği</h3>
+            <p>Platform üzerinden gönderdiğiniz mesajlar geçici olarak işlenir. Bu bilgiler şunları içerir:</p>
+            <ul>
+                <li>Hedef kullanıcının Twitter kullanıcı adı</li>
+                <li>Gönderdiğiniz mesaj içeriği (opsiyonel)</li>
+                <li>Mesajın gönderilme zamanı</li>
+            </ul>
+            
+            <h3>1.2 Toplamadığımız Bilgiler</h3>
+            <p>Anonimliğinizi korumak için aşağıdaki bilgileri <strong>asla toplamıyoruz:</strong></p>
+            <ul>
+                <li>IP adresi</li>
+                <li>Tarayıcı bilgileri</li>
+                <li>Cihaz bilgileri</li>
+                <li>Çerezler (tracking cookies)</li>
+                <li>Konum bilgisi</li>
+                <li>Herhangi bir kişisel tanımlayıcı bilgi</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <h2>2. Bilgilerin Kullanımı</h2>
+            <p>Topladığımız minimal bilgiler yalnızca şu amaçlarla kullanılır:</p>
+            <ul>
+                <li>Mesajları hedef kullanıcılara iletmek</li>
+                <li>Platformun işlevselliğini sağlamak</li>
+                <li>Kötüye kullanımı önlemek</li>
+                <li>Kullanım koşullarına uyumu denetlemek</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <h2>3. Veri Saklama</h2>
+            <p>Gönderdiğiniz mesajlar:</p>
+            <ul>
+                <li>Yalnızca moderasyon sürecinde geçici olarak saklanır</li>
+                <li>Onaylandıktan sonra paylaşılır ve sistemden silinir</li>
+                <li>Reddedilen mesajlar anında kalıcı olarak silinir</li>
+                <li>Hiçbir mesaj uzun süreli olarak arşivlenmez</li>
+            </ul>
+            
+            <div class="highlight">
+                <p><strong>Önemli:</strong> Mesajınız gönderildiği anda kimlik bilgileriniz sistemden otomatik olarak ayrılır ve asla kaydedilmez.</p>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>4. Üçüncü Taraf Paylaşımı</h2>
+            <p>Verilerinizi <strong>hiçbir koşulda</strong> üçüncü taraflarla paylaşmıyoruz, satmıyoruz veya kiralamıyoruz.</p>
+            
+            <h3>4.1 EmailJS Entegrasyonu</h3>
+            <p>Mesajları iletmek için EmailJS servisini kullanıyoruz. Bu servis yalnızca mesaj içeriğini alır, gönderen bilgilerini almaz.</p>
+        </div>
+
+        <div class="content-section">
+            <h2>5. Güvenlik</h2>
+            <p>Platformumuz şu güvenlik önlemlerini kullanır:</p>
+            <ul>
+                <li>HTTPS şifreleme</li>
+                <li>Güvenli sunucu altyapısı</li>
+                <li>Otomatik veri silme sistemleri</li>
+                <li>Düzenli güvenlik güncellemeleri</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <h2>6. Çerezler (Cookies)</h2>
+            <p>Anonymous Crush <strong>tracking çerezleri kullanmaz</strong>. Ancak Google AdSense reklamları için Google'ın çerez politikaları geçerlidir. Reklam çerezlerini tarayıcı ayarlarınızdan yönetebilirsiniz.</p>
+        </div>
+
+        <div class="content-section">
+            <h2>7. Çocukların Gizliliği</h2>
+            <p>Platformumuz 13 yaş altı çocuklara yönelik değildir. 13 yaş altındaki bireylerin platforma kayıt yapmamasını ve mesaj göndermemesini rica ederiz.</p>
+        </div>
+
+        <div class="content-section">
+            <h2>8. Haklarınız</h2>
+            <p>Kullanıcı olarak şu haklara sahipsiniz:</p>
+            <ul>
+                <li>Gönderdiğiniz mesajların silinmesini talep etme</li>
+                <li>Platform kullanımını istediğiniz zaman durdurma</li>
+                <li>Gizlilik politikası hakkında soru sorma</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <h2>9. Politika Değişiklikleri</h2>
+            <p>Bu gizlilik politikasını zaman zaman güncelleyebiliriz. Önemli değişiklikler olduğunda ana sayfamızda duyuru yapılacaktır. Son güncelleme tarihi bu sayfanın başında belirtilmiştir.</p>
+        </div>
+
+        <div class="content-section">
+            <h2>10. İletişim</h2>
+            <p>Gizlilik politikamız hakkında sorularınız varsa, <a href="iletisim.html">iletişim sayfamızdan</a> bize ulaşabilirsiniz.</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="hakkinda.html">Hakkında</a>
+            <a href="sss.html">SSS</a>
+            <a href="gizlilik.html">Gizlilik Politikası</a>
+            <a href="kullanim.html">Kullanım Koşulları</a>
+            <a href="iletisim.html">İletişim</a>
+        </div>
+        <div class="copyright">
+            &copy; 2025 Anonymous Crush. Tüm hakları saklıdır.
+        </div>
+    </footer>
+</body>
+</html>
