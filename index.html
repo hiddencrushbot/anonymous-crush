@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Anonim crush mesajı gönder. Kimliğin gizli kalacak şekilde sevdiğin kişiye mesaj bırak.">
+    <title>Anonymous Crush 💕 - Anonim Crush Mesajı Gönder</title>
+    
+    <!-- Google AdSense -->
+ <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1907165728228843"
+     crossorigin="anonymous"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navigation */
+        nav {
+            background: #1a1a1a;
+            border-bottom: 2px solid #8b0000;
+            padding: 15px 20px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        nav a {
+            color: #ddd;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #ff0000;
+        }
+
+        nav a.active {
+            color: #ff0000;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            background: #1a1a1a;
+            border: 2px solid #8b0000;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(139, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ff0000 0%, #8b0000 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #999;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #ddd;
+            font-size: 14px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #333;
+            background: #0a0a0a;
+            color: #fff;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #8b0000;
+            box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.1);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #555;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ff0000 0%, #8b0000 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 0, 0, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            background: rgba(139, 0, 0, 0.2);
+            border: 1px solid #8b0000;
+            color: #ff6b6b;
+        }
+
+        .message.error {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0000;
+            color: #ff4444;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .note {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .emoji {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            border-top: 2px solid #8b0000;
+            padding: 30px 20px;
+            text-align: center;
+            color: #999;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #ff0000;
+        }
+
+        .copyright {
+            font-size: 14px;
+            color: #666;
+        }
+
+        @media (max-width: 600px) {
+            nav ul {
+                gap: 15px;
+            }
+            
+            .container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html" class="active">Ana Sayfa</a></li>
+            <li><a href="hakkinda.html">Hakkında</a></li>
+            <li><a href="sss.html">SSS</a></li>
+            <li><a href="gizlilik.html">Gizlilik</a></li>
+            <li><a href="kullanim.html">Kullanım Koşulları</a></li>
+            <li><a href="iletisim.html">İletişim</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="header">
+                <div class="emoji">💌</div>
+                <h1>Anonymous Crush</h1>
+                <p>Birine anonim crush mesajı gönder</p>
+            </div>
+
+            <div class="message" id="message"></div>
+
+            <form id="crushForm" onsubmit="sendMessage(event)">
+                <div class="form-group">
+                    <label>Twitter Kullanıcı Adı *</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        placeholder="@olmadan sadece kullanıcı adı"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Mesajın (Opsiyonel)</label>
+                    <textarea 
+                        id="userMessage" 
+                        placeholder="İstersen anonim bir mesaj bırak..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    💕 Gönder
+                </button>
+            </form>
+
+            <div class="note">
+                Mesajın tamamen anonimdir. Kimliğin gizli kalacak. 🔒
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="hakkinda.html">Hakkında</a>
+            <a href="sss.html">SSS</a>
+            <a href="gizlilik.html">Gizlilik Politikası</a>
+            <a href="kullanim.html">Kullanım Koşulları</a>
+            <a href="iletisim.html">İletişim</a>
+        </div>
+        <div class="copyright">
+            &copy; 2025 Anonymous Crush. Tüm hakları saklıdır.
+        </div>
+    </footer>
+
+    <script>
+        // EmailJS Ayarları
+        const EMAILJS_PUBLIC_KEY = 'FGTFMDef99U2v0EVg';
+        const EMAILJS_SERVICE_ID = 'service_r6mkdbr';
+        const EMAILJS_TEMPLATE_ID = 'template_isbwifa';
+
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+
+        function sendMessage(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value.trim().replace('@', '');
+            const userMessage = document.getElementById('userMessage').value.trim();
+            const submitBtn = document.getElementById('submitBtn');
+            const messageDiv = document.getElementById('message');
+            
+            if (!username) {
+                showMessage('Lütfen kullanıcı adını gir!', 'error');
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Gönderiliyor...';
+            
+            const templateParams = {
+                to_name: 'Admin',
+                username: username,
+                message: userMessage || 'Mesaj yok',
+                timestamp: new Date().toLocaleString('tr-TR')
+            };
+            
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+                .then(function(response) {
+                    console.log('Başarılı!', response);
+                    showMessage('Mesajın gönderildi! 💕 Yakında paylaşılacak.', 'success');
+                    document.getElementById('crushForm').reset();
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '💕 Gönder';
+                }, function(error) {
+                    console.error('Hata:', error);
+                    showMessage('Bir hata oluştu. Lütfen tekrar dene.', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '💕 Gönder';
+                });
+        }
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type} show`;
+            
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
