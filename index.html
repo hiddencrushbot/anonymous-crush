@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Anonim crush mesajı gönder. Kimliğin gizli kalacak şekilde sevdiğin kişiye mesaj bırak.">
     <title>Anonymous Crush 💕 - Anonim Crush Mesajı Gönder</title>
-    
+
     <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9224203872571110"
-     crossorigin="anonymous"></script>
+    <script async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1907165728228843"
+        crossorigin="anonymous"></script>
+
+    <!-- diğer style ve scriptler burada devam edecek -->
     
     <style>
         * {
@@ -432,11 +435,11 @@
     <nav>
         <ul>
             <li><a href="index.html" class="active">Ana Sayfa</a></li>
-            <li><a href="hakkinda.html">Hakkında</a></li>
+            <li><a href="hakkinda.html">HakkÄ±nda</a></li>
             <li><a href="sss.html">SSS</a></li>
             <li><a href="gizlilik.html">Gizlilik</a></li>
-            <li><a href="kullanim.html">Kullanım Koşulları</a></li>
-            <li><a href="iletisim.html">İletişim</a></li>
+            <li><a href="kullanim.html">KullanÄ±m KoÅŸullarÄ±</a></li>
+            <li><a href="iletisim.html">Ä°letiÅŸim</a></li>
         </ul>
     </nav>
 
@@ -444,57 +447,57 @@
         <div class="container">
             <div class="header">
                 <img src="https://i.imgur.com/placeholder.jpg" alt="Love Letter" style="width: 120px; height: auto; margin-bottom: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(255, 0, 0, 0.3); animation: float 3s ease-in-out infinite; display: none;" onerror="this.style.display='none'" onload="this.style.display='block'">
-                <div class="emoji" style="display: block;">💌</div>
+                <div class="emoji" style="display: block;">ðŸ’Œ</div>
                 <h1>Anonymous Crush</h1>
-                <p>Birine anonim crush mesajı gönder</p>
+                <p>Birine anonim crush mesajÄ± gÃ¶nder</p>
             </div>
 
             <div class="message" id="message"></div>
 
             <form id="crushForm" onsubmit="sendMessage(event)">
                 <div class="form-group">
-                    <label>Twitter kullanıcı adı (username) *</label>
+                    <label>Twitter kullanÄ±cÄ± adÄ± (username) *</label>
                     <input 
                         type="text" 
                         id="username" 
-                        placeholder="@olmadan sadece kullanıcı adı"
+                        placeholder="@olmadan sadece kullanÄ±cÄ± adÄ±"
                         required
                     >
                 </div>
 
                 <div class="form-group">
-                    <label>Mesajın (tercihen)</label>
+                    <label>MesajÄ±n (tercihen)</label>
                     <textarea 
                         id="userMessage" 
-                        placeholder="İstersen anonim bir mesaj bırak..."></textarea>
+                        placeholder="Ä°stersen anonim bir mesaj bÄ±rak..."></textarea>
                 </div>
 
                 <button type="submit" class="submit-btn" id="submitBtn">
-                    💕 Gönder
+                    ðŸ’• GÃ¶nder
                 </button>
             </form>
 
             <div class="note">
-                Mesajın tamamen anonimdir. Kimliğin gizli kalacak. 🔒
+                MesajÄ±n tamamen anonimdir. KimliÄŸin gizli kalacak. ðŸ”’
             </div>
         </div>
     </div>
 
     <footer>
         <div class="footer-links">
-            <a href="hakkinda.html">Hakkında</a>
+            <a href="hakkinda.html">HakkÄ±nda</a>
             <a href="sss.html">SSS</a>
-            <a href="gizlilik.html">Gizlilik Politikası</a>
-            <a href="kullanim.html">Kullanım Koşulları</a>
-            <a href="iletisim.html">İletişim</a>
+            <a href="gizlilik.html">Gizlilik PolitikasÄ±</a>
+            <a href="kullanim.html">KullanÄ±m KoÅŸullarÄ±</a>
+            <a href="iletisim.html">Ä°letiÅŸim</a>
         </div>
         <div class="copyright">
-            &copy; 2025 Anonymous Crush. Tüm hakları saklıdır.
+            &copy; 2025 Anonymous Crush. TÃ¼m haklarÄ± saklÄ±dÄ±r.
         </div>
     </footer>
 
     <script>
-        // EmailJS Ayarları
+        // EmailJS AyarlarÄ±
         const EMAILJS_PUBLIC_KEY = 'FGTFMDef99U2v0EVg';
         const EMAILJS_SERVICE_ID = 'service_r6mkdbr';
         const EMAILJS_TEMPLATE_ID = 'template_isbwifa';
@@ -510,12 +513,12 @@
             const messageDiv = document.getElementById('message');
             
             if (!username) {
-                showMessage('Lütfen kullanıcı adını gir!', 'error');
+                showMessage('LÃ¼tfen kullanÄ±cÄ± adÄ±nÄ± gir!', 'error');
                 return;
             }
             
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Gönderiliyor...';
+            submitBtn.textContent = 'GÃ¶nderiliyor...';
             
             const templateParams = {
                 to_name: 'Admin',
@@ -526,16 +529,16 @@
             
             emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
                 .then(function(response) {
-                    console.log('Başarılı!', response);
-                    showMessage('Mesajın gönderildi! 💕 Yakında paylaşılacak.', 'success');
+                    console.log('BaÅŸarÄ±lÄ±!', response);
+                    showMessage('MesajÄ±n gÃ¶nderildi! ðŸ’• YakÄ±nda paylaÅŸÄ±lacak.', 'success');
                     document.getElementById('crushForm').reset();
                     submitBtn.disabled = false;
-                    submitBtn.textContent = '💕 Gönder';
+                    submitBtn.textContent = 'ðŸ’• GÃ¶nder';
                 }, function(error) {
                     console.error('Hata:', error);
-                    showMessage('Bir hata oluştu. Lütfen tekrar dene.', 'error');
+                    showMessage('Bir hata oluÅŸtu. LÃ¼tfen tekrar dene.', 'error');
                     submitBtn.disabled = false;
-                    submitBtn.textContent = '💕 Gönder';
+                    submitBtn.textContent = 'ðŸ’• GÃ¶nder';
                 });
         }
         
@@ -552,7 +555,7 @@
         // Floating hearts animation
         function createHeart() {
             const heart = document.createElement('div');
-            heart.innerHTML = '❤️';
+            heart.innerHTML = 'â¤ï¸';
             heart.style.position = 'absolute';
             heart.style.left = Math.random() * 100 + '%';
             heart.style.fontSize = Math.random() * 20 + 10 + 'px';
