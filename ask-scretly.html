@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Anonim soru al, cevapla, paylaş. Kimliğin gizli kalacak.">
+    <title>Ask Secretly 💭 - Anonim Soru Platformu</title>
+    
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(function(OneSignal) {
+            OneSignal.init({
+                appId: "54ca4ef2-dd2f-420e-a35c-f87ab31e979a",
+                notifyButton: { enable: true },
+                allowLocalhostAsSecureOrigin: true
+            });
+        });
+    </script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #8b0000 50%, #000 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
+        .card {
+            background: #1a1a1a;
+            border: 2px solid #dc2626;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(220, 38, 38, 0.3);
+            margin-bottom: 20px;
+        }
+        .emoji { font-size: 60px; text-align: center; margin-bottom: 20px; }
+        h1, h2 {
+            text-align: center;
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        h1 { font-size: 36px; }
+        h2 { font-size: 28px; }
+        p { text-align: center; color: #999; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; color: #ddd; margin-bottom: 8px; font-size: 14px; font-weight: 600; }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            background: #0a0a0a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+            font-family: inherit;
+        }
+        input:focus, textarea:focus { outline: none; border-color: #dc2626; }
+        textarea { resize: vertical; min-height: 100px; }
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-secondary { background: #333; border: 2px solid #dc2626; color: #dc2626; }
+        .link { text-align: center; margin-top: 20px; }
+        .link a { color: #999; text-decoration: none; }
+        .link a:hover { color: #dc2626; }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: #1a1a1a;
+            border: 2px solid #dc2626;
+            border-radius: 10px;
+            display: none;
+            animation: slideIn 0.3s;
+            z-index: 1000;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        .profile-header { text-align: center; margin-bottom: 30px; }
+        .avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin: 0 auto 15px;
+            overflow: hidden;
+        }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .twitter-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #dc2626;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+        .twitter-link:hover { color: #991b1b; }
+        .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stat-card {
+            background: #0a0a0a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .stat-value { font-size: 28px; font-weight: bold; color: #dc2626; }
+        .stat-label { font-size: 12px; color: #999; }
+        .question-card {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .tabs { display: flex; border-bottom: 2px solid #333; margin-bottom: 20px; }
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .tab.active { background: #dc2626; color: white; }
+        .hidden { display: none !important; }
+        .note { font-size: 12px; color: #666; text-align: center; margin-top: 15px; }
+        .file-upload { display: none; }
+        .upload-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #333;
+            border: 1px solid #dc2626;
+            border-radius: 8px;
+            color: #dc2626;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .upload-btn:hover { background: #dc2626; color: white; }
+        .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #dc2626;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #1DA1F2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .share-btn:hover { background: #1a8cd8; }
+        .debug-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+    <button class="debug-btn" onclick="clearAllData()">🗑️ Tüm Verileri Sil</button>
+    <div id="notification" class="notification"></div>
+
+    <div id="landingPage" class="container">
+        <div class="card">
+            <div class="emoji">💭</div>
+            <h1>Ask Secretly</h1>
+            <p>Anonim Soru Al, Cevapla, Paylaş</p>
+            <button class="btn" onclick="showSignup()">💕 Kayıt Ol</button>
+            <button class="btn btn-secondary" onclick="showLogin()" style="margin-top: 10px;">🔐 Giriş Yap</button>
+            <div class="link"><a href="index.html">← Ana Sayfaya Dön</a></div>
+        </div>
+    </div>
+
+    <div id="signupPage" class="container hidden">
+        <div class="card">
+            <a href="#" onclick="showLanding(); return false;" style="color: #dc2626; text-decoration: none;">← Geri</a>
+            <div class="emoji">🎉</div>
+            <h2>Hesap Oluştur</h2>
+            <div>
+                <div class="form-group">
+                    <label>Kullanıcı Adı *</label>
+                    <input type="text" id="signupUsername" required minlength="3">
+                </div>
+                <div class="form-group">
+                    <label>Şifre *</label>
+                    <input type="password" id="signupPassword" required>
+                </div>
+                <button type="button" class="btn" onclick="handleSignup()">💕 Hesap Oluştur</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loginPage" class="container hidden">
+        <div class="card">
+            <a href="#" onclick="showLanding(); return false;" style="color: #dc2626; text-decoration: none;">← Geri</a>
+            <div class="emoji">🔐</div>
+            <h2>Giriş Yap</h2>
+            <div>
+                <div class="form-group">
+                    <label>Kullanıcı Adı</label>
+                    <input type="text" id="loginUsername" required>
+                </div>
+                <div class="form-group">
+                    <label>Şifre</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="button" class="btn" onclick="handleLogin()">🔓 Giriş Yap</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="profilePage" class="container hidden">
+        <div class="card">
+            <a href="#" onclick="showLanding(); return false;" style="color: #dc2626; text-decoration: none;">← Ana Sayfa</a>
+            <div class="profile-header">
+                <div class="avatar" id="profileAvatar"></div>
+                <h2 id="profileUsername"></h2>
+                <a href="#" id="profileTwitterLink" class="twitter-link hidden" target="_blank">
+                    🐦 <span id="profileTwitter"></span>
+                </a>
+                <p id="profileStats"></p>
+            </div>
+            <div style="background: #0a0a0a; border: 1px solid #333; border-radius: 15px; padding: 20px;">
+                <h3 style="text-align: center; margin-bottom: 15px;">💭 Anonim soru sor</h3>
+                <textarea id="questionInput" placeholder="Sorunuzu buraya yazın..."></textarea>
+                <button class="btn" onclick="sendQuestion()" style="margin-top: 10px;">📤 Gönder</button>
+                <p class="note">🔒 Mesajın tamamen anonimdir. Kimliğin gizli kalacak.</p>
+            </div>
+        </div>
+        <div id="answeredQuestions"></div>
+    </div>
+
+    <div id="dashboardPage" class="container hidden">
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: relative;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="avatar" id="dashAvatar" style="width: 60px; height: 60px; font-size: 24px; margin: 0;"></div>
+                    <div>
+                        <h2 id="dashUsername" style="text-align: left; font-size: 20px;"></h2>
+                        <p id="dashTwitter" style="text-align: left; margin: 0; font-size: 14px;"></p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <span id="notifBadge" class="badge hidden">0</span>
+                    <button onclick="logout()" style="background: none; border: none; color: #dc2626; cursor: pointer; font-size: 16px;">🚪 Çıkış</button>
+                </div>
+            </div>
+            
+            <div style="background: #0a0a0a; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                <label style="font-size: 14px; margin-bottom: 10px;">📸 Profil Fotoğrafı</label>
+                <input type="file" id="photoUpload" class="file-upload" accept="image/*" onchange="uploadPhoto(event)">
+                <label for="photoUpload" class="upload-btn">📷 Fotoğraf Yükle</label>
+            </div>
+
+            <div class="stats" id="dashStats"></div>
+            <div style="background: #0a0a0a; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                <label style="font-size: 14px; margin-bottom: 10px;">🔗 Profil Linkini Paylaş</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="profileLink" readonly style="flex: 1;">
+                    <button onclick="copyLink()" class="btn" style="width: auto; padding: 12px 20px;">📋</button>
+                </div>
+            </div>
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('inbox')">📥 Inbox (<span id="inboxCount">0</span>)</button>
+                <button class="tab" onclick="showTab('answered')">💬 Cevaplanan (<span id="answeredCount">0</span>)</button>
+            </div>
+            <div id="questionsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        let users = {};
+        let questions = {};
+        let currentUser = null;
+        let currentTab = 'inbox';
+
+        function clearAllData() {
+            if (confirm('Tüm kullanıcı verilerini silmek istediğinizden emin misiniz?')) {
+                localStorage.clear();
+                alert('Tüm veriler silindi! Sayfa yenilenecek.');
+                location.reload();
+            }
+        }
+
+        function loadData() {
+            try {
+                const storedUsers = localStorage.getItem('askSecretly_users');
+                const storedQuestions = localStorage.getItem('askSecretly_questions');
+                const storedCurrentUser = localStorage.getItem('askSecretly_currentUser');
+                users = storedUsers ? JSON.parse(storedUsers) : {};
+                questions = storedQuestions ? JSON.parse(storedQuestions) : {};
+                currentUser = storedCurrentUser ? JSON.parse(storedCurrentUser) : null;
+            } catch(e) {
+                users = {};
+                questions = {};
+                currentUser = null;
+            }
+        }
+
+        function showNotification(msg) {
+            const notif = document.getElementById('notification');
+            notif.textContent = msg;
+            notif.style.display = 'block';
+            setTimeout(() => notif.style.display = 'none', 3000);
+        }
+
+        function showPage(pageId) {
+            ['landingPage', 'signupPage', 'loginPage', 'profilePage', 'dashboardPage'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(pageId).classList.remove('hidden');
+        }
+
+        function showLanding() { showPage('landingPage'); }
+        function showSignup() { showPage('signupPage'); }
+        function showLogin() { showPage('loginPage'); }
+
+        function handleSignup() {
+            loadData();
+            const username = document.getElementById('signupUsername').value.toLowerCase().trim();
+            const password = document.getElementById('signupPassword').value;
+
+            if (username.length < 3) {
+                showNotification('Kullanıcı adı en az 3 karakter olmalı!');
+                return;
+            }
+
+            if (users[username]) {
+                showNotification('Bu kullanıcı adı alınmış!');
+                return;
+            }
+
+            const newUser = { username, password, createdAt: Date.now() };
+            users[username] = newUser;
+            localStorage.setItem('askSecretly_users', JSON.stringify(users));
+            currentUser = newUser;
+            localStorage.setItem('askSecretly_currentUser', JSON.stringify(currentUser));
+            
+            if (window.OneSignal) { OneSignal.setExternalUserId(username); }
+            
+            showNotification('Hesap oluşturuldu! 🎉');
+            setTimeout(() => loadDashboard(), 500);
+        }
+
+        function handleLogin() {
+            loadData();
+            const username = document.getElementById('loginUsername').value.toLowerCase().trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!users[username] || users[username].password !== password) {
+                showNotification('Kullanıcı adı veya şifre hatalı!');
+                return;
+            }
+
+            currentUser = users[username];
+            localStorage.setItem('askSecretly_currentUser', JSON.stringify(currentUser));
+            showNotification('Hoş geldin! 💭');
+            setTimeout(() => loadDashboard(), 500);
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('askSecretly_currentUser');
+            showNotification('Çıkış yapıldı!');
+            showLanding();
+        }
+
+        function loadProfile(username) {
+            loadData();
+            const user = users[username];
+            if (!user) return;
+
+            const avatarEl = document.getElementById('profileAvatar');
+            if (user.photo) {
+                avatarEl.innerHTML = `<img src="${user.photo}" alt="Profile">`;
+            } else {
+                avatarEl.textContent = username[0].toUpperCase();
+            }
+            
+            document.getElementById('profileUsername').textContent = '@' + username;
+            
+            if (user.twitter) {
+                document.getElementById('profileTwitterLink').classList.remove('hidden');
+                document.getElementById('profileTwitter').textContent = '@' + user.twitter;
+                document.getElementById('profileTwitterLink').href = 'https://twitter.com/' + user.twitter;
+            }
+
+            const userQ = questions[username] || [];
+            const answered = userQ.filter(q => q.isAnswered);
+            document.getElementById('profileStats').textContent = `${userQ.length} soru aldı, ${answered.length} cevapladı`;
+
+            const container = document.getElementById('answeredQuestions');
+            container.innerHTML = '';
+            
+            answered.reverse().forEach(q => {
+                container.innerHTML += `
+                    <div class="card question-card">
+                        <p style="color: #ddd; margin-bottom: 10px;">💭 ${q.question}</p>
+                        <p style="color: #dc2626; font-weight: 600;">✍️ ${q.answer}</p>
+                        <p style="font-size: 12px; color: #666; margin-top: 10px;">🕐 ${new Date(q.answeredAt).toLocaleDateString('tr-TR')}</p>
+                    </div>
+                `;
+            });
+
+            showPage('profilePage');
+        }
+
+        function sendQuestion() {
+            const text = document.getElementById('questionInput').value.trim();
+            if (!text) {
+                showNotification('Soru yazmalısın!');
+                return;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('u');
+
+            const newQ = {
+                id: Date.now().toString(),
+                question: text,
+                answer: null,
+                isAnswered: false,
+                createdAt: Date.now(),
+                isNew: true
+            };
+
+            loadData();
+            if (!questions[username]) questions[username] = [];
+            questions[username].push(newQ);
+            localStorage.setItem('askSecretly_questions', JSON.stringify(questions));
+
+            const notifs = JSON.parse(localStorage.getItem('askSecretly_notifs') || '{}');
+            if (!notifs[username]) notifs[username] = 0;
+            notifs[username]++;
+            localStorage.setItem('askSecretly_notifs', JSON.stringify(notifs));
+
+            if (window.OneSignal) { OneSignal.sendTag('new_question', '1'); }
+
+            document.getElementById('questionInput').value = '';
+            showNotification('Sorun gönderildi! ✅');
+        }
+
+        function uploadPhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                loadData();
+                currentUser.photo = e.target.result;
+                users[currentUser.username] = currentUser;
+                localStorage.setItem('askSecretly_users', JSON.stringify(users));
+                localStorage.setItem('askSecretly_currentUser', JSON.stringify(currentUser));
+                
+                const avatarEl = document.getElementById('dashAvatar');
+                avatarEl.innerHTML = `<img src="${e.target.result}" alt="Profile">`;
+                showNotification('Fotoğraf yüklendi! 📸');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function checkNotifications() {
+            if (!currentUser) return;
+            
+            const notifs = JSON.parse(localStorage.getItem('askSecretly_notifs') || '{}');
+            const count = notifs[currentUser.username] || 0;
+            
+            const badge = document.getElementById('notifBadge');
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function clearNotifications() {
+            const notifs = JSON.parse(localStorage.getItem('askSecretly_notifs') || '{}');
+            notifs[currentUser.username] = 0;
+            localStorage.setItem('askSecretly_notifs', JSON.stringify(notifs));
+            document.getElementById('notifBadge').classList.add('hidden');
+        }
+
+        function loadDashboard() {
+            loadData();
+            if (!currentUser) {
+                showLanding();
+                return;
+            }
+            
+            document.getElementById('dashUsername').textContent = '@' + currentUser.username;
+            if (currentUser.twitter) {
+                document.getElementById('dashTwitter').textContent = '🐦 @' + currentUser.twitter;
+            }
+
+            const avatarEl = document.getElementById('dashAvatar');
+            if (currentUser.photo) {
+                avatarEl.innerHTML = `<img src="${currentUser.photo}" alt="Profile">`;
+            } else {
+                avatarEl.textContent = currentUser.username[0].toUpperCase();
+            }
+
+            const userQ = questions[currentUser.username] || [];
+            const answered = userQ.filter(q => q.isAnswered).length;
+            
+            document.getElementById('dashStats').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${userQ.length}</div>
+                    <div class="stat-label">Toplam Soru</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${answered}</div>
+                    <div class="stat-label">Cevaplanan</div>
+                </div>
+            `;
+
+            document.getElementById('profileLink').value = `hiddencrushbot.com/ask-secretly.html?u=${currentUser.username}`;
+            
+            checkNotifications();
+            showTab('inbox');
+            showPage('dashboardPage');
+        }
+
+        function showTab(tab) {
+            loadData();
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (tab === 'inbox') { clearNotifications(); }
+
+            const userQ = questions[currentUser.username] || [];
+            const inbox = userQ.filter(q => !q.isAnswered);
+            const answered = userQ.filter(q => q.isAnswered);
+
+            document.getElementById('inboxCount').textContent = inbox.length;
+            document.getElementById('answeredCount').textContent = answered.length;
+
+            const container = document.getElementById('questionsContainer');
+            const list = tab === 'inbox' ? inbox : answered;
+
+            if (list.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">Henüz soru yok</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            list.reverse().forEach(q => {
+                const div = document.createElement('div');
+                div.className = 'question-card';
+                div.innerHTML = `
+                    <p style="color: #ddd;">${q.question}</p>
+                    ${q.isAnswered ? `
+                        <p style="color: #dc2626; margin-top: 10px; font-weight: 600;">✍️ ${q.answer}</p>
+                        <button onclick="shareToTwitter('${q.id}')" class="share-btn">🐦 Twitter'da Paylaş</button>
+                    ` : `
+                        <textarea id="answer-${q.id}" placeholder="Cevabını yaz..." style="margin-top: 10px;"></textarea>
+                        <button class="btn" onclick="answerQuestion('${q.id}')" style="margin-top: 10px;">✅ Cevapla</button>
+                    `}
+                    <button onclick="deleteQuestion('${q.id}')" style="background: none; border: none; color: #666; cursor: pointer; margin-top: 10px;">🗑️ Sil</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function answerQuestion(id) {
+            const answer = document.getElementById('answer-' + id).value.trim();
+            if (!answer) {
+                showNotification('Cevap yazmalısın!');
+                return;
+            }
+
+            loadData();
+            const userQ = questions[currentUser.username];
+            const q = userQ.find(q => q.id === id);
+            q.answer = answer;
+            q.isAnswered = true;
+            q.answeredAt = Date.now();
+
+            localStorage.setItem('askSecretly_questions', JSON.stringify(questions));
+            showNotification('Cevap kaydedildi! 💬');
+            loadDashboard();
+        }
+
+        function deleteQuestion(id) {
+            loadData();
+            questions[currentUser.username] = questions[currentUser.username].filter(q => q.id !== id);
+            localStorage.setItem('askSecretly_questions', JSON.stringify(questions));
+            showNotification('Soru silindi!');
+            loadDashboard();
+        }
+
+        function copyLink() {
+            const link = document.getElementById('profileLink');
+            link.select();
+            document.execCommand('copy');
+            showNotification('Link kopyalandı! 📋');
+        }
+
+        function shareToTwitter(questionId) {
+            loadData();
+            const userQ = questions[currentUser.username];
+            const q = userQ.find(qu => qu.id === questionId);
+            if (!q) return;
+
+            const tweetText = `💭 Soru: ${q.question}\n\n✍️ Cevap: ${q.answer}\n\nBana da anonim soru sor! 👇\nhiddencrushbot.com/ask-secretly.html?u=${currentUser.username}\n\n#AskSecretly #AnonimSoru`;
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+            window.open(twitterUrl, '_blank');
+        }
+
+        window.onload = function() {
+            loadData();
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('u');
+            
+            if (username && users[username]) {
+                loadProfile(username);
+            } else if (currentUser) {
+                loadDashboard();
+            } else {
+                showLanding();
+            }
+        };
+    </script>
+</body>
+</html>
+Bunu kopyala, yeni dosya oluştur ask-secretly.html olarak kaydet! 🚀
