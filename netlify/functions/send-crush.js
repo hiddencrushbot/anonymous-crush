@@ -1,6 +1,8 @@
-const nodemailer = require("nodemailer");
+import { Resend } from "resend";
 
-exports.handler = async (event) => {
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export const handler = async (event) => {
   const headers = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Content-Type",
@@ -22,26 +24,18 @@ exports.handler = async (event) => {
       };
     }
 
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP,
-      },
-    });
-
-    await transporter.sendMail({
-      from: process.env.GMAIL_USER,
-      to: process.env.GMAIL_USER,
+    await resend.emails.send({
+      from: process.env.MAIL_FROM,
+      to: process.env.MAIL_TO,
       subject: "💕 Yeni Anonymous Crush Mesajı",
       html: `
         <div style="font-family: Arial; padding:20px">
-          <h2>Yeni Crush Mesajı</h2>
+          <h2>Yeni Crush Mesajı 💌</h2>
           <p><b>Kullanıcı:</b> @${username}</p>
           <p><b>Mesaj:</b></p>
           <p>${message || "Mesaj yok"}</p>
+          <hr />
+          <small>hiddencrushbot.com</small>
         </div>
       `,
     });
@@ -52,7 +46,7 @@ exports.handler = async (event) => {
       body: JSON.stringify({ success: true }),
     };
   } catch (error) {
-    console.error("MAIL ERROR:", error);
+    console.error("RESEND ERROR:", error);
     return {
       statusCode: 500,
       headers,
