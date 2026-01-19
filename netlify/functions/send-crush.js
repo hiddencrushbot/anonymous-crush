@@ -1,13 +1,12 @@
-// Netlify Function - EmailJS credentials gizli
+const nodemailer = require('nodemailer');
+
 exports.handler = async (event) => {
-    // CORS headers
     const headers = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type',
         'Content-Type': 'application/json'
     };
 
-    // OPTIONS request for CORS
     if (event.httpMethod === 'OPTIONS') {
         return { statusCode: 200, headers, body: '' };
     }
@@ -31,50 +30,47 @@ exports.handler = async (event) => {
             };
         }
 
-        // Gizli credentials - environment variables'dan
-        const SERVICE_ID = process.env.EMAILJS_SERVICE_ID || 'service_r6mkdbr';
-        const TEMPLATE_ID = process.env.EMAILJS_TEMPLATE_ID || 'template_isbwifa';
-        const PUBLIC_KEY = process.env.EMAILJS_PUBLIC_KEY || 'FGTFMDef99U2v0EVg';
-
-        // EmailJS API'ye direkt istek
-        const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                service_id: SERVICE_ID,
-                template_id: TEMPLATE_ID,
-                user_id: PUBLIC_KEY,
-                template_params: {
-                    username: '@' + username.replace('@', ''),
-                    email: message || 'Mesaj yok - sadece crush bildirimi'
-                }
-            })
+        // Gmail SMTP ayarları
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.GMAIL_USER,
+                pass: process.env.GMAIL_APP_PASSWORD
+            }
         });
 
-        if (response.ok) {
-            return {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({ success: true, message: 'Mesaj gönderildi!' })
-            };
-        } else {
-            const errorText = await response.text();
-            console.error('EmailJS Error:', errorText);
-            return {
-                statusCode: 500,
-                headers,
-                body: JSON.stringify({ error: 'Email gönderilemedi', details: errorText })
-            };
-        }
+        // Email gönder
+        await transporter.sendMail({
+            from: process.env.GMAIL_USER,
+            to: process.env.GMAIL_USER,
+            subject: '💕 Yeni Anonymous Crush Mesajı!',
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
+                    <h2 style="color: #dc2626;">💕 Yeni Crush Mesajı!</h2>
+                    <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                        <p><strong>Twitter Kullanıcısı:</strong></p>
+                        <p style="font-size: 18px; color: #1d9bf0;">@${username}</p>
+                        <hr style="border: none; border-top: 1px solid #ddd; margin: 15px 0;">
+                        <p><strong>Mesaj:</strong></p>
+                        <p style="font-size: 16px;">${message || 'Mesaj yok - sadece crush bildirimi'}</p>
+                    </div>
+                    <p style="color: #666; font-size: 12px;">Bu mesaj hiddencrushbot.com üzerinden gönderildi.</p>
+                </div>
+            `
+        });
+
+        return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({ success: true, message: 'Mesaj gönderildi!' })
+        };
 
     } catch (error) {
-        console.error('Function Error:', error);
+        console.error('Email Error:', error);
         return {
             statusCode: 500,
             headers,
-            body: JSON.stringify({ error: 'Sunucu hatası', details: error.message })
+            body: JSON.stringify({ error: 'Email gönderilemedi', details: error.message })
         };
     }
 };
