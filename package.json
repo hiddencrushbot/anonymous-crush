@@ -1,0 +1,6 @@
+{
+  "name": "anonymous-crush",
+  "dependencies": {
+    "nodemailer": "^6.9.8"
+  }
+}
