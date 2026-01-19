@@ -1,6 +1,7 @@
 {
   "name": "anonymous-crush",
+  "type": "module",
   "dependencies": {
-    "nodemailer": "^6.9.8"
+    "resend": "^3.2.0"
   }
 }
