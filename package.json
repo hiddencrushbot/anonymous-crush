@@ -1,0 +1,12 @@
+{
+  "name": "anonymous-crush",
+  "version": "1.0.0",
+  "description": "Anonymous crush messaging platform",
+  "type": "module",
+  "dependencies": {
+    "resend": "^3.5.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
