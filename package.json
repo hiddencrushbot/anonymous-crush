@@ -1,8 +1,0 @@
-{
-  "name": "anonymous-crush",
-  "version": "1.0.0",
-  "description": "Anonymous messaging platform",
-  "dependencies": {
-    "firebase-admin": "^12.0.0"
-  }
-}
