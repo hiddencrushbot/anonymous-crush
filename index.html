@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Anonim crush mesajı gönder. Kimliğin gizli kalacak şekilde sevdiğin kişiye mesaj bırak.">
+    <title>Anonymous Crush 💕 - Anonim Crush Mesajı Gönder</title>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1907165728228843" crossorigin="anonymous"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Tema Değişkenleri */
+        :root {
+            --primary: #dc2626;
+            --primary-hover: #b91c1c;
+            --primary-glow: rgba(220, 38, 38, 0.3);
+            --bg: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-card: #1a1a1a;
+            --text: #e7e9ea;
+            --text-secondary: #71767b;
+            --border: #2f3336;
+        }
+
+        [data-theme="blue"] {
+            --primary: #1d9bf0;
+            --primary-hover: #1a8cd8;
+            --primary-glow: rgba(29, 155, 240, 0.3);
+        }
+        [data-theme="pink"] {
+            --primary: #f91880;
+            --primary-hover: #e01070;
+            --primary-glow: rgba(249, 24, 128, 0.3);
+        }
+        [data-theme="purple"] {
+            --primary: #7856ff;
+            --primary-hover: #6644ee;
+            --primary-glow: rgba(120, 86, 255, 0.3);
+        }
+        [data-theme="green"] {
+            --primary: #00ba7c;
+            --primary-hover: #00a06a;
+            --primary-glow: rgba(0, 186, 124, 0.3);
+        }
+        [data-theme="orange"] {
+            --primary: #ff7a00;
+            --primary-hover: #e66d00;
+            --primary-glow: rgba(255, 122, 0, 0.3);
+        }
+
+        [data-mode="light"] {
+            --bg: #ffffff;
+            --bg-secondary: #f7f9f9;
+            --bg-card: #ffffff;
+            --text: #0f1419;
+            --text-secondary: #536471;
+            --border: #eff3f4;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            padding: 8px 14px;
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+
+        nav a:hover {
+            background: var(--bg-secondary);
+            color: var(--text);
+        }
+
+        nav a.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .theme-toggle {
+            display: flex;
+            gap: 6px;
+        }
+
+        .theme-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-btn.active {
+            border-color: var(--text);
+        }
+
+        .theme-btn.red { background: #dc2626; }
+        .theme-btn.blue { background: #1d9bf0; }
+        .theme-btn.pink { background: #f91880; }
+        .theme-btn.purple { background: #7856ff; }
+        .theme-btn.green { background: #00ba7c; }
+        .theme-btn.orange { background: #ff7a00; }
+
+        .mode-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            transition: all 0.2s;
+        }
+
+        .mode-btn:hover {
+            background: var(--bg-card);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            gap: 20px;
+            flex-direction: column;
+        }
+
+        /* Ask Secretly Promo Card */
+        .promo-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 24px;
+            max-width: 480px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: 0 4px 20px var(--primary-glow);
+            transition: transform 0.2s, box-shadow 0.3s;
+        }
+
+        .promo-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--primary-glow);
+        }
+
+        .promo-content {
+            flex: 1;
+        }
+
+        .promo-icon {
+            font-size: 32px;
+            margin-bottom: 4px;
+        }
+
+        .promo-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .promo-desc {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .promo-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .promo-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(2px);
+        }
+
+        .container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            box-shadow: 0 8px 30px var(--primary-glow);
+            max-width: 480px;
+            width: 100%;
+            padding: 40px;
+            transition: box-shadow 0.3s, background 0.3s;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .emoji {
+            font-size: 56px;
+            margin-bottom: 16px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: var(--text-secondary);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--primary-glow);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            background: rgba(0, 186, 124, 0.15);
+            border: 1px solid #00ba7c;
+            color: #00ba7c;
+        }
+
+        .message.error {
+            background: rgba(244, 33, 46, 0.15);
+            border: 1px solid #f4212e;
+            color: #f4212e;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .note {
+            text-align: center;
+            margin-top: 20px;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            padding: 24px 20px;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Mobile */
+        @media (max-width: 640px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            nav ul {
+                gap: 4px;
+            }
+
+            nav a {
+                font-size: 13px;
+                padding: 6px 10px;
+            }
+
+            .theme-toggle {
+                order: -1;
+            }
+
+            .container {
+                padding: 28px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .promo-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .promo-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+
+</head>
+<body data-theme="red" data-mode="dark">
+    <nav>
+        <div class="nav-container">
+            <ul>
+                <li><a href="index.html" class="active">Ana Sayfa</a></li>
+                <li><a href="ask-secretly.html">Ask Secretly</a></li>
+                <li><a href="hakkinda.html">Hakkında</a></li>
+                <li><a href="sss.html">SSS</a></li>
+                <li><a href="gizlilik.html">Gizlilik</a></li>
+                <li><a href="iletisim.html">İletişim</a></li>
+            </ul>
+            <div class="theme-toggle">
+                <button class="theme-btn red active" onclick="setTheme('red')" title="Kırmızı"></button>
+                <button class="theme-btn blue" onclick="setTheme('blue')" title="Mavi"></button>
+                <button class="theme-btn pink" onclick="setTheme('pink')" title="Pembe"></button>
+                <button class="theme-btn purple" onclick="setTheme('purple')" title="Mor"></button>
+                <button class="theme-btn green" onclick="setTheme('green')" title="Yeşil"></button>
+                <button class="theme-btn orange" onclick="setTheme('orange')" title="Turuncu"></button>
+                <button class="mode-btn" onclick="toggleMode()" title="Mod Değiştir">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <!-- Ask Secretly Promo Card -->
+        <div class="promo-card">
+            <div class="promo-content">
+                <div class="promo-icon">💭</div>
+                <div class="promo-title">Ask Secretly Profilini Oluştur</div>
+                <div class="promo-desc">Anonim soru al ve cevapla!</div>
+            </div>
+            <a href="ask-secretly.html" class="promo-btn">
+                Profil Oluştur →
+            </a>
+        </div>
+
+        <div class="container">
+            <div class="header">
+                <div class="emoji">💌</div>
+                <h1>Anonymous Crush</h1>
+                <p>Birine anonim crush mesajı gönder</p>
+            </div>
+
+            <div class="message" id="message"></div>
+
+            <form id="crushForm" onsubmit="sendMessage(event)">
+                <div class="form-group">
+                    <label>Twitter Kullanıcı Adı *</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        placeholder="@olmadan sadece kullanıcı adı"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Mesajın (Opsiyonel)</label>
+                    <textarea 
+                        id="userMessage" 
+                        placeholder="İstersen anonim bir mesaj bırak..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    💕 Gönder
+                </button>
+            </form>
+
+            <div class="note">
+                🔒 Mesajın tamamen anonim. Kimliğin gizli kalacak.
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="hakkinda.html">Hakkında</a>
+            <a href="sss.html">SSS</a>
+            <a href="gizlilik.html">Gizlilik</a>
+            <a href="iletisim.html">İletişim</a>
+        </div>
+        <div class="copyright">
+            © 2025 Anonymous Crush. Tüm hakları saklıdır.
+        </div>
+    </footer>
+
+    <script>
+        // Tema Sistemi
+        const savedTheme = localStorage.getItem('ac_theme') || 'red';
+        const savedMode = localStorage.getItem('ac_mode') || 'dark';
+        
+        document.body.setAttribute('data-theme', savedTheme);
+        document.body.setAttribute('data-mode', savedMode);
+        updateThemeUI();
+        updateModeUI();
+
+        function setTheme(theme) {
+            document.body.setAttribute('data-theme', theme);
+            localStorage.setItem('ac_theme', theme);
+            updateThemeUI();
+        }
+
+        function toggleMode() {
+            const currentMode = document.body.getAttribute('data-mode');
+            const newMode = currentMode === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-mode', newMode);
+            localStorage.setItem('ac_mode', newMode);
+            updateModeUI();
+        }
+
+        function updateThemeUI() {
+            const theme = document.body.getAttribute('data-theme');
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.classList.contains(theme)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function updateModeUI() {
+            const mode = document.body.getAttribute('data-mode');
+            const modeBtn = document.querySelector('.mode-btn');
+            modeBtn.textContent = mode === 'dark' ? '🌙' : '☀️';
+        }
+
+        // Mesaj gönder - Netlify Function üzerinden (key'ler gizli!)
+        async function sendMessage(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value.trim().replace('@', '');
+            const userMessage = document.getElementById('userMessage').value.trim();
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (!username) {
+                showMessage('Lütfen kullanıcı adını gir!', 'error');
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Gönderiliyor...';
+            
+            try {
+                const response = await fetch('/.netlify/functions/send-crush', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        message: userMessage
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    showMessage('Mesajın gönderildi! 💕 Yakında paylaşılacak.', 'success');
+                    document.getElementById('crushForm').reset();
+                } else {
+                    throw new Error(data.error || 'Bilinmeyen hata');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Bir hata oluştu: ' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '💕 Gönder';
+            }
+        }
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type} show`;
+            
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
