@@ -1,7 +1,0 @@
-{
-  "name": "anonymous-crush",
-  "type": "module",
-  "dependencies": {
-    "resend": "^3.2.0"
-  }
-}
