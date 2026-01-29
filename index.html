@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Anonim crush mesajı gönder. Kimliğin gizli kalacak şekilde sevdiğin kişiye mesaj bırak.">
+    <title>Anonymous Crush 💕 - Anonim Crush Mesajı Gönder</title>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1907165728228843" crossorigin="anonymous"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Tema Değişkenleri */
+        :root {
+            --primary: #dc2626;
+            --primary-hover: #b91c1c;
+            --primary-glow: rgba(220, 38, 38, 0.3);
+            --bg: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-card: #1a1a1a;
+            --text: #e7e9ea;
+            --text-secondary: #71767b;
+            --border: #2f3336;
+        }
+
+        [data-theme="blue"] {
+            --primary: #1d9bf0;
+            --primary-hover: #1a8cd8;
+            --primary-glow: rgba(29, 155, 240, 0.3);
+        }
+        [data-theme="pink"] {
+            --primary: #f91880;
+            --primary-hover: #e01070;
+            --primary-glow: rgba(249, 24, 128, 0.3);
+        }
+        [data-theme="purple"] {
+            --primary: #7856ff;
+            --primary-hover: #6644ee;
+            --primary-glow: rgba(120, 86, 255, 0.3);
+        }
+        [data-theme="green"] {
+            --primary: #00ba7c;
+            --primary-hover: #00a06a;
+            --primary-glow: rgba(0, 186, 124, 0.3);
+        }
+        [data-theme="orange"] {
+            --primary: #ff7a00;
+            --primary-hover: #e66d00;
+            --primary-glow: rgba(255, 122, 0, 0.3);
+        }
+
+        [data-mode="light"] {
+            --bg: #ffffff;
+            --bg-secondary: #f7f9f9;
+            --bg-card: #ffffff;
+            --text: #0f1419;
+            --text-secondary: #536471;
+            --border: #eff3f4;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            padding: 8px 14px;
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+
+        nav a:hover {
+            background: var(--bg-secondary);
+            color: var(--text);
+        }
+
+        nav a.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .theme-toggle {
+            display: flex;
+            gap: 6px;
+        }
+
+        .theme-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-btn.active {
+            border-color: var(--text);
+        }
+
+        .theme-btn.red { background: #dc2626; }
+        .theme-btn.blue { background: #1d9bf0; }
+        .theme-btn.pink { background: #f91880; }
+        .theme-btn.purple { background: #7856ff; }
+        .theme-btn.green { background: #00ba7c; }
+        .theme-btn.orange { background: #ff7a00; }
+
+        .mode-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            transition: all 0.2s;
+        }
+
+        .mode-btn:hover {
+            background: var(--bg-card);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            gap: 20px;
+            flex-direction: column;
+        }
+
+        /* Ask Secretly Promo Card */
+        .promo-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 24px;
+            max-width: 480px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: 0 4px 20px var(--primary-glow);
+            transition: transform 0.2s, box-shadow 0.3s;
+        }
+
+        .promo-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--primary-glow);
+        }
+
+        .promo-content {
+            flex: 1;
+        }
+
+        .promo-icon {
+            font-size: 32px;
+            margin-bottom: 4px;
+        }
+
+        .promo-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .promo-desc {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .promo-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .promo-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(2px);
+        }
+
+        /* Stats Section - Firebase Real-time */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            max-width: 480px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            box-shadow: 0 8px 30px var(--primary-glow);
+            max-width: 480px;
+            width: 100%;
+            padding: 40px;
+            transition: box-shadow 0.3s, background 0.3s;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .emoji {
+            font-size: 56px;
+            margin-bottom: 16px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: var(--text-secondary);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--primary-glow);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            background: rgba(0, 186, 124, 0.15);
+            border: 1px solid #00ba7c;
+            color: #00ba7c;
+        }
+
+        .message.error {
+            background: rgba(244, 33, 46, 0.15);
+            border: 1px solid #f4212e;
+            color: #f4212e;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .note {
+            text-align: center;
+            margin-top: 20px;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* Features Section */
+        .features-section {
+            max-width: 900px;
+            width: 100%;
+            margin: 40px 0;
+        }
+
+        .features-section h2 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 32px;
+            color: var(--text);
+            font-weight: 800;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px var(--primary-glow);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .feature-card h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            max-width: 700px;
+            width: 100%;
+            margin: 40px 0;
+        }
+
+        .how-it-works h2 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 32px;
+            font-weight: 800;
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .step {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+
+        .step:hover {
+            transform: translateX(4px);
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            font-size: 16px;
+            margin-bottom: 4px;
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .step-content p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Testimonials */
+        .testimonials {
+            max-width: 900px;
+            width: 100%;
+            margin: 40px 0;
+        }
+
+        .testimonials h2 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 32px;
+            font-weight: 800;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .testimonial-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .testimonial-text {
+            font-size: 14px;
+            color: var(--text);
+            margin-bottom: 12px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .testimonial-author {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* FAQ Preview */
+        .faq-preview {
+            max-width: 700px;
+            width: 100%;
+            margin: 40px 0;
+        }
+
+        .faq-preview h2 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 24px;
+            font-weight: 800;
+        }
+
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: transform 0.2s;
+        }
+
+        .faq-item:hover {
+            transform: translateX(4px);
+        }
+
+        .faq-question {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .faq-answer {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .faq-link {
+            display: inline-block;
+            margin-top: 16px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+
+        .faq-link:hover {
+            transform: translateX(4px);
+        }
+
+        /* Final CTA */
+        .final-cta {
+            max-width: 600px;
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin: 40px 0;
+            box-shadow: 0 8px 30px var(--primary-glow);
+        }
+
+        .cta-content h2 {
+            font-size: 28px;
+            color: white;
+            margin-bottom: 12px;
+            font-weight: 800;
+        }
+
+        .cta-content p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 24px;
+            font-size: 16px;
+        }
+
+        .cta-button {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 14px 32px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            padding: 24px 20px;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Mobile */
+        @media (max-width: 640px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            nav ul {
+                gap: 4px;
+            }
+
+            nav a {
+                font-size: 13px;
+                padding: 6px 10px;
+            }
+
+            .theme-toggle {
+                order: -1;
+            }
+
+            .container {
+                padding: 28px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .promo-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .promo-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .features-section h2,
+            .how-it-works h2,
+            .testimonials h2,
+            .faq-preview h2,
+            .cta-content h2 {
+                font-size: 22px;
+            }
+
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonial-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+</head>
+<body data-theme="red" data-mode="dark">
+    <nav>
+        <div class="nav-container">
+            <ul>
+                <li><a href="index.html" class="active">Ana Sayfa</a></li>
+                <li><a href="ask-secretly.html">Ask Secretly</a></li>
+                <li><a href="hakkinda.html">Hakkında</a></li>
+                <li><a href="sss.html">SSS</a></li>
+                <li><a href="gizlilik.html">Gizlilik</a></li>
+                <li><a href="iletisim.html">İletişim</a></li>
+            </ul>
+            <div class="theme-toggle">
+                <button class="theme-btn red active" onclick="setTheme('red')" title="Kırmızı"></button>
+                <button class="theme-btn blue" onclick="setTheme('blue')" title="Mavi"></button>
+                <button class="theme-btn pink" onclick="setTheme('pink')" title="Pembe"></button>
+                <button class="theme-btn purple" onclick="setTheme('purple')" title="Mor"></button>
+                <button class="theme-btn green" onclick="setTheme('green')" title="Yeşil"></button>
+                <button class="theme-btn orange" onclick="setTheme('orange')" title="Turuncu"></button>
+                <button class="mode-btn" onclick="toggleMode()" title="Mod Değiştir">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <!-- Ask Secretly Promo Card -->
+        <div class="promo-card">
+            <div class="promo-content">
+                <div class="promo-icon">💭</div>
+                <div class="promo-title">Ask Secretly Profilini Oluştur</div>
+                <div class="promo-desc">Anonim soru al ve cevapla!</div>
+            </div>
+            <a href="ask-secretly.html" class="promo-btn">
+                Profil Oluştur →
+            </a>
+        </div>
+
+        <!-- Stats Section - Firebase Real-time -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number" id="messagesCount">0</div>
+                <div class="stat-label">Gönderilen Mesaj</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="usersCount">0</div>
+                <div class="stat-label">Aktif Kullanıcı</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="satisfactionRate">0</div>
+                <div class="stat-label">Başarı Oranı</div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="header">
+                <div class="emoji">💌</div>
+                <h1>Anonymous Crush</h1>
+                <p>Birine anonim crush mesajı gönder</p>
+            </div>
+
+            <div class="message" id="message"></div>
+
+            <form id="crushForm" onsubmit="sendMessage(event)">
+                <div class="form-group">
+                    <label>Twitter Kullanıcı Adı *</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        placeholder="@olmadan sadece kullanıcı adı"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Mesajın (Opsiyonel)</label>
+                    <textarea 
+                        id="userMessage" 
+                        placeholder="İstersen anonim bir mesaj bırak..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    💕 Gönder
+                </button>
+            </form>
+
+            <div class="note">
+                🔒 Mesajın tamamen anonim. Kimliğin gizli kalacak.
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="features-section">
+            <h2>Neden Anonymous Crush?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>100% Anonim</h3>
+                    <p>Kimliğin tamamen gizli kalır. IP adresi kaydetmiyoruz.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Anında İletim</h3>
+                    <p>Mesajın saniyeler içinde Twitter'da paylaşılır.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💕</div>
+                    <h3>Kolay Kullanım</h3>
+                    <p>Kayıt gerektirmez. Yaz, gönder, bitir!</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Özelleştirilebilir</h3>
+                    <p>6 farklı tema rengi, karanlık/aydınlık mod.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="how-it-works">
+            <h2>Nasıl Çalışır?</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Kullanıcı Adını Yaz</h3>
+                        <p>Crush'ının Twitter kullanıcı adını gir</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Mesajını Yaz</h3>
+                        <p>Anonim mesajını yaz (opsiyonel)</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Gönder</h3>
+                        <p>Mesajın Twitter'da paylaşılır, sen anonim kalırsın!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonials -->
+        <div class="testimonials">
+            <h2>Kullanıcılarımız Ne Diyor?</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-text">"Sonunda ona söyleyebildim! Platform süper güvenli 💕"</div>
+                    <div class="testimonial-author">- Anonim Kullanıcı</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-text">"En iyi anonim mesaj platformu. Hızlı ve kolay!"</div>
+                    <div class="testimonial-author">- Mutlu Kullanıcı</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-text">"Crush'ım mesajı görünce çok mutlu oldu 😊"</div>
+                    <div class="testimonial-author">- Başarılı Gönderici</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Preview -->
+        <div class="faq-preview">
+            <h2>Sıkça Sorulan Sorular</h2>
+            <div class="faq-item">
+                <div class="faq-question">🤔 Mesajım gerçekten anonim mi?</div>
+                <div class="faq-answer">Evet! Hiçbir IP adresi veya kimlik bilgisi kaydetmiyoruz.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">⏱️ Mesajım ne zaman paylaşılır?</div>
+                <div class="faq-answer">Genellikle 1-24 saat içinde Twitter'da paylaşılır.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">📱 Kayıt olmam gerekiyor mu?</div>
+                <div class="faq-answer">Hayır! Hiçbir kayıt gerekmez. Direkt gönderebilirsin.</div>
+            </div>
+            <a href="sss.html" class="faq-link">Tüm Soruları Gör →</a>
+        </div>
+
+        <!-- Final CTA -->
+        <div class="final-cta">
+            <div class="cta-content">
+                <h2>Hala Düşünüyor musun? 💭</h2>
+                <p>Binlerce kişi cesaret buldu, sıra sende!</p>
+                <button onclick="scrollToForm()" class="cta-button">
+                    Hemen Mesaj Gönder 💕
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="hakkinda.html">Hakkında</a>
+            <a href="sss.html">SSS</a>
+            <a href="gizlilik.html">Gizlilik</a>
+            <a href="iletisim.html">İletişim</a>
+        </div>
+        <div class="copyright">
+            © 2025 Anonymous Crush. Tüm hakları saklıdır.
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAV9XmbjW7lT5e9lmNFDr7hUMCUfyg8x8Y",
+            authDomain: "asksecretly.firebaseapp.com",
+            databaseURL: "https://asksecretly-default-rtdb.firebaseio.com",
+            projectId: "asksecretly",
+            storageBucket: "asksecretly.firebasestorage.app",
+            messagingSenderId: "906492672712",
+            appId: "1:906492672712:web:2b2f26c3b4e38d3e9e9f85"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const database = firebase.database();
+
+        // Real-time Stats Fetching
+        function loadRealTimeStats() {
+            // Messages Count
+            database.ref('stats/totalMessages').on('value', (snapshot) => {
+                const count = snapshot.val() || 0;
+                animateNumber('messagesCount', count, '+');
+            });
+
+            // Active Users Count
+            database.ref('stats/activeUsers').on('value', (snapshot) => {
+                const count = snapshot.val() || 0;
+                animateNumber('usersCount', count, '+');
+            });
+
+            // Satisfaction Rate
+            database.ref('stats/satisfactionRate').on('value', (snapshot) => {
+                const rate = snapshot.val() || 95;
+                animateNumber('satisfactionRate', rate, '%');
+            });
+        }
+
+        // Animate number counting
+        function animateNumber(elementId, targetValue, suffix) {
+            const element = document.getElementById(elementId);
+            const currentValue = parseInt(element.textContent) || 0;
+            
+            if (currentValue === targetValue) return;
+
+            const duration = 1000;
+            const steps = 30;
+            const increment = (targetValue - currentValue) / steps;
+            let current = currentValue;
+            let step = 0;
+
+            const timer = setInterval(() => {
+                step++;
+                current += increment;
+                
+                if (step >= steps) {
+                    element.textContent = targetValue + suffix;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current) + suffix;
+                }
+            }, duration / steps);
+        }
+
+        // Increment message count when a message is sent
+        function incrementMessageCount() {
+            const messagesRef = database.ref('stats/totalMessages');
+            messagesRef.transaction((current) => {
+                return (current || 0) + 1;
+            });
+        }
+
+        // Track active user (simple session-based)
+        function trackActiveUser() {
+            const sessionId = sessionStorage.getItem('crushSessionId') || 
+                              'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            sessionStorage.setItem('crushSessionId', sessionId);
+
+            const userRef = database.ref('activeUsers/' + sessionId);
+            userRef.set({
+                lastActive: firebase.database.ServerValue.TIMESTAMP
+            });
+
+            // Remove old users (older than 30 days) and update count
+            database.ref('activeUsers').once('value', (snapshot) => {
+                const users = snapshot.val() || {};
+                const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+                let activeCount = 0;
+
+                Object.keys(users).forEach(userId => {
+                    if (users[userId].lastActive > thirtyDaysAgo) {
+                        activeCount++;
+                    } else {
+                        database.ref('activeUsers/' + userId).remove();
+                    }
+                });
+
+                database.ref('stats/activeUsers').set(activeCount);
+            });
+        }
+
+        // Load stats on page load
+        window.addEventListener('load', () => {
+            loadRealTimeStats();
+            trackActiveUser();
+        });
+
+        // Tema Sistemi
+        const savedTheme = localStorage.getItem('ac_theme') || 'red';
+        const savedMode = localStorage.getItem('ac_mode') || 'dark';
+        
+        document.body.setAttribute('data-theme', savedTheme);
+        document.body.setAttribute('data-mode', savedMode);
+        updateThemeUI();
+        updateModeUI();
+
+        function setTheme(theme) {
+            document.body.setAttribute('data-theme', theme);
+            localStorage.setItem('ac_theme', theme);
+            updateThemeUI();
+        }
+
+        function toggleMode() {
+            const currentMode = document.body.getAttribute('data-mode');
+            const newMode = currentMode === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-mode', newMode);
+            localStorage.setItem('ac_mode', newMode);
+            updateModeUI();
+        }
+
+        function updateThemeUI() {
+            const theme = document.body.getAttribute('data-theme');
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.classList.contains(theme)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function updateModeUI() {
+            const mode = document.body.getAttribute('data-mode');
+            const modeBtn = document.querySelector('.mode-btn');
+            modeBtn.textContent = mode === 'dark' ? '🌙' : '☀️';
+        }
+
+        // Scroll to form function
+        function scrollToForm() {
+            document.getElementById('username').focus();
+            document.getElementById('username').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Mesaj gönder - Netlify Function üzerinden (key'ler gizli!)
+        async function sendMessage(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value.trim().replace('@', '');
+            const userMessage = document.getElementById('userMessage').value.trim();
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (!username) {
+                showMessage('Lütfen kullanıcı adını gir!', 'error');
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Gönderiliyor...';
+            
+            try {
+                const response = await fetch('/api/send-crush', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        message: userMessage
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    showMessage('Mesajın gönderildi! 💕 Yakında paylaşılacak.', 'success');
+                    document.getElementById('crushForm').reset();
+                    
+                    // Increment message count in Firebase
+                    incrementMessageCount();
+                } else {
+                    throw new Error(data.error || 'Bilinmeyen hata');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Bir hata oluştu: ' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '💕 Gönder';
+            }
+        }
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type} show`;
+            
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
