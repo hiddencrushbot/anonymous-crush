@@ -1,0 +1,23 @@
+# robots.txt for hiddencrushbot.com
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://hiddencrushbot.com/sitemap.xml
+
+# Google bots
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+# AdSense bot
+User-agent: Mediapartners-Google
+Allow: /
+
+# Disallow admin or API endpoints (if any)
+Disallow: /api/
+Disallow: /.netlify/
+Disallow: /netlify/
