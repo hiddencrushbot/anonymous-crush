@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QUEERVIEW</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --black: #000000;
+  --black2: #080808;
+  --black3: #111111;
+  --black4: #1a1a1a;
+  --black5: #222222;
+  --border: #2a2a2a;
+  --border2: #333333;
+  --pink: #ff3d9a;
+  --pink2: #ff6bb5;
+  --pink3: rgba(255,61,154,0.15);
+  --purple: #9b59f5;
+  --purple2: #b980ff;
+  --purple3: rgba(155,89,245,0.15);
+  --white: #ffffff;
+  --white2: #e8e8e8;
+  --white3: #aaaaaa;
+  --white4: #555555;
+  --gold: #ffcc44;
+}
+
+html, body { background: var(--black); color: var(--white); font-family: 'Inter', sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 56px; display: flex; align-items: center;
+  padding: 0 2.5rem; gap: 2rem;
+  background: rgba(0,0,0,0.96);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem; letter-spacing: 0.15em;
+  background: linear-gradient(90deg, var(--pink), var(--purple));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  cursor: pointer; flex-shrink: 0;
+}
+
+.nav-cats { display: flex; gap: 0; flex: 1; overflow-x: auto; scrollbar-width: none; }
+.nav-cats::-webkit-scrollbar { display: none; }
+
+.ncat {
+  padding: 0 1rem; height: 56px; display: flex; align-items: center;
+  background: none; border: none; border-bottom: 2px solid transparent;
+  color: var(--white4); font-family: 'Inter', sans-serif;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; cursor: pointer; white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+.ncat:hover { color: var(--white2); }
+.ncat.on { color: var(--white); border-bottom-color: var(--pink); }
+
+.nav-r { display: flex; gap: 0.5rem; flex-shrink: 0; align-items: center; }
+
+.search-ico {
+  width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+  background: none; border: none; color: var(--white4); font-size: 1rem;
+  cursor: pointer; border-radius: 6px; transition: all 0.15s;
+}
+.search-ico:hover { background: var(--black4); color: var(--white); }
+
+.nadd {
+  padding: 0.45rem 1.1rem; background: var(--pink);
+  border: none; color: var(--black); font-family: 'Inter', sans-serif;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; cursor: pointer; border-radius: 6px;
+  transition: background 0.15s;
+}
+.nadd:hover { background: var(--pink2); }
+
+/* SEARCH BAR */
+.sbar {
+  position: fixed; top: 56px; left: 0; right: 0; z-index: 190;
+  padding: 1rem 2.5rem; background: rgba(0,0,0,0.98);
+  border-bottom: 1px solid var(--border);
+  transform: translateY(-110%); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+.sbar.open { transform: translateY(0); }
+.sbar input {
+  width: 100%; max-width: 500px; background: var(--black3);
+  border: 1px solid var(--border2); border-radius: 8px;
+  padding: 0.65rem 1rem; color: var(--white);
+  font-family: 'Inter', sans-serif; font-size: 0.9rem; outline: none;
+  transition: border-color 0.15s;
+}
+.sbar input:focus { border-color: var(--pink); }
+.sbar input::placeholder { color: var(--white4); }
+
+/* ── PAGES ── */
+.page { display: none; padding-top: 56px; }
+.page.active { display: block; }
+
+/* ── HERO ── */
+.hero {
+  position: relative; min-height: 75vh;
+  display: flex; align-items: flex-end; overflow: hidden;
+  background: var(--black);
+}
+.hero-gradient {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 80% at 0% 50%, rgba(155,89,245,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 80% 20%, rgba(255,61,154,0.1) 0%, transparent 55%);
+}
+.hero-gradient::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 50%;
+  background: linear-gradient(to top, var(--black) 0%, transparent 100%);
+}
+.hero-body {
+  position: relative; z-index: 2;
+  padding: 0 2.5rem 3.5rem; max-width: 640px;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.3rem 0.75rem; border-radius: 4px;
+  background: var(--pink3); border: 1px solid rgba(255,61,154,0.3);
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--pink);
+  margin-bottom: 1.25rem;
+}
+.hero-tag::before { content: '●'; font-size: 0.4rem; }
+
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 9vw, 7rem);
+  line-height: 0.95; letter-spacing: 0.02em;
+  margin-bottom: 1rem; color: var(--white);
+}
+.hero-title .hl { color: var(--pink); }
+
+.hero-meta {
+  display: flex; gap: 1rem; align-items: center;
+  margin-bottom: 1rem; flex-wrap: wrap;
+}
+.hero-meta span { font-size: 0.72rem; font-weight: 500; color: var(--white3); letter-spacing: 0.04em; }
+.hero-meta .sep { color: var(--border2); }
+.hero-meta .rating { color: var(--gold); font-weight: 700; }
+
+.hero-desc {
+  font-size: 0.88rem; font-weight: 300; line-height: 1.75;
+  color: rgba(255,255,255,0.55); max-width: 480px; margin-bottom: 2rem;
+}
+
+.hero-btns { display: flex; gap: 0.75rem; }
+.hbtn-p {
+  padding: 0.8rem 2rem; background: var(--pink); border: none;
+  color: var(--black); font-family: 'Inter', sans-serif;
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; cursor: pointer; border-radius: 6px;
+  transition: background 0.15s;
+}
+.hbtn-p:hover { background: var(--pink2); }
+.hbtn-g {
+  padding: 0.8rem 1.75rem; background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15); color: var(--white);
+  font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  cursor: pointer; border-radius: 6px; text-decoration: none;
+  display: inline-block; transition: background 0.15s;
+}
+.hbtn-g:hover { background: rgba(255,255,255,0.12); }
+
+/* ── FILTER STRIP ── */
+.fstrip {
+  padding: 1rem 2.5rem; border-bottom: 1px solid var(--border);
+  display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center;
+  background: var(--black);
+}
+.fsep { width: 1px; height: 16px; background: var(--border2); margin: 0 0.4rem; flex-shrink: 0; }
+.fc {
+  padding: 0.3rem 0.85rem; background: none;
+  border: 1px solid var(--border2); border-radius: 20px;
+  color: var(--white4); font-family: 'Inter', sans-serif;
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; cursor: pointer; white-space: nowrap;
+  transition: all 0.15s;
+}
+.fc:hover { border-color: var(--white4); color: var(--white2); }
+.fc.on { background: var(--pink3); border-color: var(--pink); color: var(--pink); }
+
+/* ── ROWS ── */
+.rows { padding: 2rem 2.5rem 5rem; display: flex; flex-direction: column; gap: 3rem; background: var(--black); }
+
+.row-head {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin-bottom: 1.1rem;
+}
+.row-head h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.3rem; letter-spacing: 0.08em; color: var(--white);
+}
+.row-head .rcount {
+  font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--white4);
+  background: var(--black4); border: 1px solid var(--border);
+  padding: 0.15rem 0.6rem; border-radius: 4px;
+}
+.row-head .rmore {
+  margin-left: auto; background: none; border: none;
+  color: var(--pink); font-family: 'Inter', sans-serif;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; cursor: pointer; transition: color 0.15s;
+}
+.row-head .rmore:hover { color: var(--pink2); }
+
+.prow {
+  display: flex; gap: 0.75rem;
+  overflow-x: auto; scrollbar-width: none; padding-bottom: 0.25rem;
+}
+.prow::-webkit-scrollbar { display: none; }
+
+/* ── POSTER CARD ── */
+.pcard {
+  flex-shrink: 0; width: 160px; cursor: pointer;
+  position: relative; border-radius: 8px; overflow: hidden;
+  background: var(--black3);
+  transition: transform 0.25s cubic-bezier(0.4,0,0.2,1), box-shadow 0.25s;
+}
+.pcard:hover {
+  transform: scale(1.05) translateY(-4px);
+  box-shadow: 0 20px 50px rgba(255,61,154,0.2), 0 8px 20px rgba(0,0,0,0.6);
+  z-index: 5;
+}
+
+.pcard-img {
+  width: 100%; aspect-ratio: 2/3; overflow: hidden;
+  background: var(--black4); display: flex; align-items: center;
+  justify-content: center; font-size: 3.5rem; position: relative;
+}
+.pcard-img img { width:100%; height:100%; object-fit:cover; display:block; transition: transform 0.3s; }
+.pcard:hover .pcard-img img { transform: scale(1.06); }
+
+/* Bottom gradient */
+.pcard-img::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 55%;
+  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+  z-index: 1;
+}
+
+/* Hover overlay */
+.pcard-hover {
+  position: absolute; inset: 0; z-index: 3;
+  background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.2s;
+}
+.pcard:hover .pcard-hover { opacity: 1; }
+.pcard-play {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--pink); display: flex; align-items: center;
+  justify-content: center; font-size: 0.9rem; color: var(--black);
+  transform: scale(0.7); transition: transform 0.2s;
+}
+.pcard:hover .pcard-play { transform: scale(1); }
+
+/* Tags top */
+.pcard-tags {
+  position: absolute; top: 8px; left: 8px; right: 8px;
+  z-index: 4; display: flex; justify-content: space-between; align-items: flex-start;
+  opacity: 0; transition: opacity 0.2s;
+}
+.pcard:hover .pcard-tags { opacity: 1; }
+.ptag {
+  padding: 0.18rem 0.5rem; border-radius: 4px;
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.ptag-film { background: rgba(255,204,68,0.9); color: #000; }
+.ptag-dizi { background: rgba(155,89,245,0.9); color: #fff; }
+.ptag-belgesel { background: rgba(255,255,255,0.9); color: #000; }
+.ptag-cat { background: rgba(255,61,154,0.9); color: #fff; }
+.ptag-cat-gay { background: rgba(155,89,245,0.9); color: #fff; }
+.ptag-cat-trans { background: rgba(100,210,255,0.9); color: #000; }
+.ptag-cat-bi { background: rgba(255,204,68,0.9); color: #000; }
+.ptag-cat-queer { background: rgba(80,200,130,0.9); color: #000; }
+
+/* Card bottom info */
+.pcard-info {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 0.7rem 0.75rem 0.65rem; z-index: 2;
+}
+.pcard-title {
+  font-size: 0.82rem; font-weight: 600; line-height: 1.25;
+  margin-bottom: 0.3rem; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; color: var(--white);
+}
+.pcard-sub { display: flex; justify-content: space-between; align-items: center; }
+.pcard-year { font-size: 0.62rem; color: rgba(255,255,255,0.45); font-weight: 400; }
+.pcard-rating { font-size: 0.62rem; color: var(--gold); font-weight: 700; }
+
+/* Platform chips bottom */
+.pcard-plats {
+  display: flex; gap: 0.25rem; flex-wrap: wrap; margin-top: 0.3rem;
+}
+.pplat {
+  font-size: 0.55rem; font-weight: 600; letter-spacing: 0.04em;
+  text-transform: uppercase; color: rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.07); border-radius: 3px;
+  padding: 0.1rem 0.35rem;
+}
+
+/* ── DETAIL PAGE ── */
+.dback-wrap { position: relative; min-height: 65vh; overflow: hidden; }
+.dback {
+  position: absolute; inset: 0;
+  background: var(--black);
+}
+.dback::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 80% at 0% 40%, rgba(155,89,245,0.2) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 90% 10%, rgba(255,61,154,0.12) 0%, transparent 55%);
+}
+.dback::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 45%;
+  background: linear-gradient(to top, var(--black), transparent);
+}
+
+.dbody {
+  position: relative; z-index: 2;
+  display: flex; gap: 2.5rem; align-items: flex-end;
+  min-height: 65vh; padding: 0 2.5rem 3rem;
+}
+
+.dposter {
+  flex-shrink: 0; width: 200px; aspect-ratio: 2/3;
+  border-radius: 10px; overflow: hidden; background: var(--black4);
+  display: flex; align-items: center; justify-content: center; font-size: 5rem;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.7), 0 0 0 1px var(--border);
+}
+.dposter img { width:100%; height:100%; object-fit:cover; display:block; }
+
+.dinfo { flex: 1; max-width: 600px; }
+
+.dtag-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.dtag {
+  padding: 0.25rem 0.75rem; border-radius: 4px;
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.dtag-cat { background: var(--pink3); border: 1px solid rgba(255,61,154,0.4); color: var(--pink); }
+.dtag-type { background: var(--purple3); border: 1px solid rgba(155,89,245,0.4); color: var(--purple2); }
+
+.dtitle {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.5rem,6vw,5rem); line-height: 0.95;
+  letter-spacing: 0.03em; margin-bottom: 0.4rem; color: var(--white);
+}
+.dorig { font-size: 0.82rem; color: var(--white4); margin-bottom: 1rem; font-style: italic; }
+
+.dstats { display: flex; gap: 1.25rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.dstat { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--white4); }
+.dstat.hi { color: var(--gold); }
+
+.ddesc {
+  font-size: 0.87rem; font-weight: 300; line-height: 1.8;
+  color: rgba(255,255,255,0.5); max-width: 520px; margin-bottom: 1.75rem;
+}
+
+.dwhere { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--white4); margin-bottom: 0.65rem; }
+.dwatch { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+
+.wbtn {
+  padding: 0.6rem 1.4rem; border-radius: 6px; border: none;
+  font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  cursor: pointer; text-decoration: none; display: inline-block;
+  transition: all 0.15s;
+}
+.wb-netflix { background: #e50914; color: #fff; }
+.wb-netflix:hover { background: #c4070f; }
+.wb-mubi { background: #fff; color: #000; }
+.wb-mubi:hover { background: #e8e8e8; }
+.wb-youtube { background: #ff0000; color: #fff; }
+.wb-youtube:hover { background: #cc0000; }
+.wb-viki { background: #1a8c4e; color: #fff; }
+.wb-viki:hover { background: #15723f; }
+.wb-gaga { background: var(--pink); color: #000; }
+.wb-gaga:hover { background: var(--pink2); }
+.wb-webdrama { background: var(--purple); color: #fff; }
+.wb-webdrama:hover { background: var(--purple2); }
+.wb-other { background: transparent; border: 1px solid var(--border2); color: var(--white3); }
+.wb-other:hover { border-color: var(--pink); color: var(--pink); }
+
+/* BACK */
+.bwrap { padding: 1.25rem 2.5rem 0; }
+.blink {
+  background: none; border: none; color: var(--white4);
+  font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+  display: flex; align-items: center; gap: 0.4rem; transition: color 0.15s;
+}
+.blink:hover { color: var(--white); }
+
+/* REVIEWS */
+.revwrap { padding: 2.5rem 2.5rem; max-width: 720px; background: var(--black); }
+.revwrap h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.08em; margin-bottom: 1.5rem; color: var(--white); }
+
+.revwrite {
+  background: var(--black3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem;
+}
+.starrow { display: flex; gap: 0.4rem; margin-bottom: 1rem; }
+.starr { font-size: 1.35rem; color: var(--border2); cursor: pointer; background: none; border: none; transition: color 0.1s, transform 0.1s; }
+.starr.on { color: var(--gold); transform: scale(1.1); }
+
+.revta {
+  width: 100%; min-height: 75px; padding: 0.75rem;
+  background: var(--black4); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--white);
+  font-family: 'Inter', sans-serif; font-size: 0.85rem;
+  outline: none; resize: none; transition: border-color 0.15s;
+  margin-bottom: 0.75rem; line-height: 1.6;
+}
+.revta:focus { border-color: var(--pink); }
+.revta::placeholder { color: var(--white4); }
+.postbtn {
+  padding: 0.5rem 1.25rem; background: var(--pink); border: none;
+  color: var(--black); font-family: 'Inter', sans-serif;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; cursor: pointer; border-radius: 6px;
+  transition: background 0.15s;
+}
+.postbtn:hover { background: var(--pink2); }
+
+.revlist { display: flex; flex-direction: column; gap: 0.75rem; }
+.revitem {
+  padding: 1rem 1.25rem; background: var(--black3);
+  border: 1px solid var(--border); border-radius: 10px;
+  border-left: 2px solid var(--pink);
+}
+.revtop { display: flex; justify-content: space-between; margin-bottom: 0.4rem; }
+.revuser { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--pink); }
+.revstars { font-size: 0.75rem; color: var(--gold); }
+.revtext { font-size: 0.84rem; color: rgba(255,255,255,0.5); line-height: 1.65; }
+.norev { font-size: 0.82rem; color: var(--white4); font-style: italic; }
+
+/* ── ADMIN PAGE ── */
+.adminwrap { max-width: 660px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+.adminwrap h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.08em; margin-bottom: 0.4rem; color: var(--white); }
+.adminwrap > p { font-size: 0.8rem; color: var(--white4); margin-bottom: 2.5rem; line-height: 1.7; }
+
+.asec { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--white4); display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.1rem; }
+.asec::after { content:''; flex:1; height:1px; background:var(--border); }
+
+.trow { display: flex; gap: 0.6rem; margin-bottom: 0.5rem; }
+.tinp {
+  flex: 1; padding: 0.75rem 1rem; background: var(--black3);
+  border: 1px solid var(--border); border-radius: 8px;
+  color: var(--white); font-family: 'Inter', sans-serif; font-size: 0.88rem;
+  outline: none; transition: border-color 0.15s;
+}
+.tinp:focus { border-color: var(--purple); }
+.tinp::placeholder { color: var(--white4); }
+.tbtn {
+  padding: 0.75rem 1.25rem; background: var(--purple); border: none;
+  color: var(--white); font-family: 'Inter', sans-serif;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; cursor: pointer; border-radius: 8px;
+  transition: background 0.15s; white-space: nowrap;
+}
+.tbtn:hover { background: var(--purple2); }
+.tbtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.tresults { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.75rem; }
+.tr {
+  display: flex; gap: 1rem; align-items: center; padding: 0.85rem 1rem;
+  background: var(--black3); border: 1px solid var(--border);
+  border-radius: 8px; cursor: pointer; transition: border-color 0.15s;
+}
+.tr:hover { border-color: var(--border2); }
+.tr.sel { border-color: var(--purple); background: rgba(155,89,245,0.06); }
+.tr-thumb { width: 36px; min-width: 36px; height: 54px; border-radius: 4px; background: var(--black5); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; overflow: hidden; }
+.tr-thumb img { width:100%; height:100%; object-fit:cover; }
+.tr-info h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.2rem; color: var(--white); }
+.tr-info p { font-size: 0.7rem; color: var(--white4); }
+.tr > span { margin-left: auto; font-size: 0.7rem; color: var(--purple2); opacity: 0.5; transition: opacity 0.15s; white-space: nowrap; }
+.tr:hover > span, .tr.sel > span { opacity: 1; }
+
+.fdiv { border: none; border-top: 1px solid var(--border); margin: 1.75rem 0; }
+.fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+.fg { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.25rem; }
+.fl { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--white4); }
+.fi, .fs, .fta {
+  padding: 0.65rem 0.85rem; background: var(--black3);
+  border: 1px solid var(--border); border-radius: 8px;
+  color: var(--white); font-family: 'Inter', sans-serif;
+  font-size: 0.83rem; outline: none; transition: border-color 0.15s;
+}
+.fi:focus, .fs:focus, .fta:focus { border-color: var(--purple); }
+.fs option { background: var(--black3); }
+.fta { resize: none; min-height: 90px; line-height: 1.6; }
+
+.platrows { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.6rem; }
+.platrow { display: flex; gap: 0.5rem; }
+.platrow .fs { flex: 1.2; }
+.platrow .fi { flex: 2.5; }
+.platrow button {
+  padding: 0 0.75rem; background: none; border: 1px solid var(--border);
+  border-radius: 8px; color: var(--white4); cursor: pointer; font-size: 0.8rem;
+  transition: all 0.15s;
+}
+.platrow button:hover { border-color: var(--pink); color: var(--pink); }
+
+.addplat {
+  width: 100%; padding: 0.6rem;
+  background: none; border: 1px dashed var(--border2); border-radius: 8px;
+  color: var(--white4); font-family: 'Inter', sans-serif;
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; cursor: pointer; transition: all 0.15s;
+}
+.addplat:hover { border-color: var(--purple); color: var(--purple2); }
+
+.savebtn {
+  width: 100%; padding: 1rem; margin-top: 2rem;
+  background: linear-gradient(90deg, var(--pink), var(--purple));
+  border: none; color: var(--white); font-family: 'Inter', sans-serif;
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; cursor: pointer; border-radius: 8px;
+  transition: opacity 0.15s;
+}
+.savebtn:hover { opacity: 0.88; }
+
+.cancelbtn {
+  width: 100%; padding: 0.7rem; margin-top: 0.5rem;
+  background: none; border: 1px solid var(--border); border-radius: 8px;
+  color: var(--white4); font-family: 'Inter', sans-serif;
+  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; cursor: pointer; transition: all 0.15s;
+}
+.cancelbtn:hover { border-color: var(--white4); color: var(--white); }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 2rem; left: 50%;
+  transform: translateX(-50%) translateY(70px);
+  background: linear-gradient(90deg, var(--pink), var(--purple));
+  color: var(--white); padding: 0.7rem 1.75rem; border-radius: 8px;
+  font-family: 'Inter', sans-serif; font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  z-index: 9999; opacity: 0; transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+.empty { text-align: center; padding: 5rem; color: var(--white4); font-size: 0.88rem; }
+
+@media(max-width:640px) {
+  nav { padding: 0 1rem; gap: 1rem; }
+  .hero-body, .fstrip, .rows, .bwrap, .revwrap { padding-left: 1rem; padding-right: 1rem; }
+  .dbody { flex-direction: column; padding: 0 1rem 2.5rem; gap: 1.25rem; }
+  .dposter { width: 130px; }
+  .dtitle { font-size: 2.5rem; }
+  .fgrid { grid-template-columns: 1fr; }
+  .adminwrap { padding: 2rem 1rem 4rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" onclick="goHome()">QueerView</div>
+  <div class="nav-cats" id="navCats">
+    <button class="ncat on" onclick="filterCat('tümü',this)">Tümü</button>
+    <button class="ncat" onclick="filterCat('lezbiyen',this)">Lezbiyen</button>
+    <button class="ncat" onclick="filterCat('gay',this)">Gay · BL</button>
+    <button class="ncat" onclick="filterCat('trans',this)">Trans</button>
+    <button class="ncat" onclick="filterCat('biseksüel',this)">Biseksüel</button>
+    <button class="ncat" onclick="filterCat('queer',this)">Queer</button>
+  </div>
+  <div class="nav-r">
+    <button class="search-ico" onclick="toggleSearch()" title="Ara">⌕</button>
+    <button class="nadd" onclick="showPage('adminPage')">+ Ekle</button>
+  </div>
+</nav>
+
+<div class="sbar" id="sbar">
+  <input type="text" placeholder="Film veya dizi ara…" oninput="doSearch(this.value)" autocomplete="off">
+</div>
+
+<!-- HOME -->
+<div class="page active" id="homePage">
+  <div class="hero">
+    <div class="hero-gradient"></div>
+    <div class="hero-body">
+      <div class="hero-tag">Editörün Seçimi</div>
+      <h1 class="hero-title">PORTRAIT<br>OF A <span class="hl">LADY</span><br>ON FIRE</h1>
+      <div class="hero-meta">
+        <span class="rating">★ 4.9</span>
+        <span class="sep">·</span>
+        <span>2019</span>
+        <span class="sep">·</span>
+        <span>Fransa</span>
+        <span class="sep">·</span>
+        <span>Lezbiyen</span>
+      </div>
+      <p class="hero-desc">18. yüzyıl Fransa'sında bir ressam ile modelinin sessiz, yakıcı aşkı. Céline Sciamma'nın feminist başyapıtı.</p>
+      <div class="hero-btns">
+        <button class="hbtn-p" onclick="openDetail(7)">Detayları Gör</button>
+        <a href="https://mubi.com" target="_blank" class="hbtn-g">Mubi'de İzle →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="fstrip">
+    <div id="gchips" style="display:flex;gap:0.4rem;flex-wrap:wrap">
+      <button class="fc on" onclick="setF('genre','tümü',this,'gchips')">Tümü</button>
+      <button class="fc" onclick="setF('genre','romantik',this,'gchips')">Romantik</button>
+      <button class="fc" onclick="setF('genre','dram',this,'gchips')">Dram</button>
+      <button class="fc" onclick="setF('genre','komedi',this,'gchips')">Komedi</button>
+      <button class="fc" onclick="setF('genre','aksiyon',this,'gchips')">Aksiyon</button>
+      <button class="fc" onclick="setF('genre','belgesel',this,'gchips')">Belgesel</button>
+    </div>
+    <div class="fsep"></div>
+    <div id="cchips" style="display:flex;gap:0.4rem;flex-wrap:wrap">
+      <button class="fc on" onclick="setF('country','tümü',this,'cchips')">Tümü</button>
+      <button class="fc" onclick="setF('country','Tayvan',this,'cchips')">Tayvan</button>
+      <button class="fc" onclick="setF('country','Tayland',this,'cchips')">Tayland</button>
+      <button class="fc" onclick="setF('country','Kore',this,'cchips')">Kore</button>
+      <button class="fc" onclick="setF('country','Japonya',this,'cchips')">Japonya</button>
+      <button class="fc" onclick="setF('country','ABD',this,'cchips')">ABD</button>
+      <button class="fc" onclick="setF('country','Avrupa',this,'cchips')">Avrupa</button>
+    </div>
+    <div class="fsep"></div>
+    <div id="pchips" style="display:flex;gap:0.4rem;flex-wrap:wrap">
+      <button class="fc on" onclick="setF('platform','tümü',this,'pchips')">Tümü</button>
+      <button class="fc" onclick="setF('platform','Netflix',this,'pchips')">Netflix</button>
+      <button class="fc" onclick="setF('platform','WebDrama',this,'pchips')">WebDrama</button>
+      <button class="fc" onclick="setF('platform','GagaOOLala',this,'pchips')">GagaOOLala</button>
+      <button class="fc" onclick="setF('platform','Viki',this,'pchips')">Viki</button>
+      <button class="fc" onclick="setF('platform','YouTube',this,'pchips')">YouTube</button>
+      <button class="fc" onclick="setF('platform','Mubi',this,'pchips')">Mubi</button>
+    </div>
+  </div>
+
+  <div class="rows" id="rows"></div>
+</div>
+
+<!-- DETAIL -->
+<div class="page" id="detailPage">
+  <div class="bwrap"><button class="blink" onclick="goHome()">← Geri</button></div>
+  <div class="dback-wrap">
+    <div class="dback" id="dbackColor"></div>
+    <div class="dbody">
+      <div class="dposter" id="dposter"></div>
+      <div class="dinfo">
+        <div class="dtag-row" id="dtagrow"></div>
+        <div class="dtitle" id="dtitle"></div>
+        <div class="dorig" id="dorig"></div>
+        <div class="dstats" id="dstats"></div>
+        <p class="ddesc" id="ddesc"></p>
+        <div class="dwhere">Nerede İzlenir</div>
+        <div class="dwatch" id="dwatch"></div>
+      </div>
+    </div>
+  </div>
+  <div class="revwrap">
+    <h3>Yorumlar</h3>
+    <div class="revwrite">
+      <div class="starrow" id="starrow">
+        <button class="starr" onclick="setR(1)">★</button>
+        <button class="starr" onclick="setR(2)">★</button>
+        <button class="starr" onclick="setR(3)">★</button>
+        <button class="starr" onclick="setR(4)">★</button>
+        <button class="starr" onclick="setR(5)">★</button>
+      </div>
+      <textarea class="revta" id="revta" placeholder="Düşüncelerini yaz…"></textarea>
+      <button class="postbtn" onclick="postReview()">Yayınla</button>
+    </div>
+    <div class="revlist" id="revlist"></div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="adminPage">
+  <div class="adminwrap">
+    <h2>İçerik Ekle</h2>
+    <p>Film veya dizi adını yaz, TMDB'den otomatik çek — poster, açıklama, yıl gelir. Platform linklerini ekle ve kaydet.</p>
+
+    <div class="asec">TMDB'den Ara</div>
+    <div class="trow">
+      <input class="tinp" id="tq" placeholder="Örn: Carol, Heartstopper, Word of Honor…" onkeydown="if(event.key==='Enter')doTmdb()">
+      <button class="tbtn" id="tbtn" onclick="doTmdb()">Ara</button>
+    </div>
+    <div class="tresults" id="tresults"></div>
+
+    <div class="fdiv"></div>
+    <div class="asec">Detayları Düzenle</div>
+
+    <div class="fgrid">
+      <div class="fg"><label class="fl">Başlık</label><input class="fi" id="fTitle" placeholder="—"></div>
+      <div class="fg"><label class="fl">Orijinal Başlık</label><input class="fi" id="fOrig" placeholder="—"></div>
+      <div class="fg"><label class="fl">Yıl</label><input class="fi" id="fYear" type="number" placeholder="2024"></div>
+      <div class="fg"><label class="fl">İçerik Türü</label>
+        <select class="fs" id="fType"><option value="dizi">Dizi</option><option value="film">Film</option><option value="belgesel">Belgesel</option></select>
+      </div>
+      <div class="fg"><label class="fl">Queer Kategori</label>
+        <select class="fs" id="fCat">
+          <option value="lezbiyen">Lezbiyen / GL</option>
+          <option value="gay">Gay / BL</option>
+          <option value="trans">Trans</option>
+          <option value="biseksüel">Biseksüel</option>
+          <option value="queer">Queer (Genel)</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Ülke</label>
+        <select class="fs" id="fCountry">
+          <option>Tayvan</option><option>Tayland</option><option>Kore</option>
+          <option>Japonya</option><option>ABD</option><option>Türkiye</option>
+          <option>Avrupa</option><option>Diğer</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Genre</label>
+        <select class="fs" id="fGenre">
+          <option value="romantik">Romantik</option><option value="dram">Dram</option>
+          <option value="komedi">Komedi</option><option value="aksiyon">Aksiyon</option>
+          <option value="korku">Korku</option><option value="belgesel">Belgesel</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Poster URL</label><input class="fi" id="fPoster" placeholder="TMDB'den otomatik"></div>
+    </div>
+    <div class="fg" style="margin-bottom:1rem"><label class="fl">Açıklama</label><textarea class="fta" id="fDesc" placeholder="TMDB'den otomatik gelir…"></textarea></div>
+
+    <div class="fdiv"></div>
+    <div class="asec">Platform Linkleri</div>
+    <div class="platrows" id="platrows">
+      <div class="platrow">
+        <select class="fs"><option>WebDrama</option><option>GagaOOLala</option><option>Viki</option><option>Netflix</option><option>YouTube</option><option>Mubi</option><option>Gain</option><option>PuhuTV</option><option>Prime</option><option>Diğer</option></select>
+        <input class="fi" placeholder="https://…">
+        <button onclick="rmPlat(this)">✕</button>
+      </div>
+    </div>
+    <button class="addplat" onclick="addPlat()">+ Platform Ekle</button>
+    <button class="savebtn" onclick="saveIt()">Kaydet & Yayınla</button>
+    <button class="cancelbtn" onclick="goHome()">İptal</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ Eklendi!</div>
+
+<script>
+const PS = {Netflix:'wb-netflix',Mubi:'wb-mubi',YouTube:'wb-youtube',Viki:'wb-viki',GagaOOLala:'wb-gaga',WebDrama:'wb-webdrama',Gain:'wb-other',PuhuTV:'wb-other',Prime:'wb-other'};
+const catBg = {lezbiyen:'rgba(255,61,154,0.12)',gay:'rgba(155,89,245,0.12)',trans:'rgba(100,210,255,0.08)',biseksüel:'rgba(255,204,68,0.08)',queer:'rgba(80,200,130,0.08)'};
+const catTagClass = {lezbiyen:'ptag-cat',gay:'ptag-cat-gay',trans:'ptag-cat-trans',biseksüel:'ptag-cat-bi',queer:'ptag-cat-queer'};
+
+let db = [
+  {id:1,title:'Word of Honor',origTitle:'山河令',year:2021,type:'dizi',cat:'gay',country:'Tayvan',genre:'aksiyon',desc:'İki güçlü wuxia ustası arasındaki derin bağı anlatan epik bir Çin BL dizisi. Tehlikeli jianghu dünyasında filizlenen aşk ve sadakat hikayesi.',poster:'',emoji:'⚔️',rating:4.8,platforms:[{name:'WebDrama',url:'https://webdrama.co'},{name:'YouTube',url:'https://youtube.com'}],reviews:[{user:'BLFan',stars:5,text:'Çin BL\'nin zirvesi. Her sahne sizi ekrana kilitliyor.'}]},
+  {id:2,title:'Ossan\'s Love',origTitle:'おっさんずラブ',year:2018,type:'dizi',cat:'gay',country:'Japonya',genre:'komedi',desc:'Japon BL\'nin en sevilen komedi temsilcisi. Bir ofiste beklenmedik şekilde gelişen aşk — absürd, sıcak ve gerçek.',poster:'',emoji:'💼',rating:4.5,platforms:[{name:'Viki',url:'https://viki.com'},{name:'YouTube',url:'https://youtube.com'}],reviews:[]},
+  {id:3,title:'Carol',origTitle:'Carol',year:2015,type:'film',cat:'lezbiyen',country:'ABD',genre:'romantik',desc:'1950\'ler New York\'unda iki kadın arasındaki yasak aşk. Cate Blanchett\'ın her bakışı bir roman. Lezbiyen sinema tarihinin ikonası.',poster:'',emoji:'🌹',rating:4.9,platforms:[{name:'Mubi',url:'https://mubi.com'},{name:'Netflix',url:'https://netflix.com'}],reviews:[{user:'Sinefil',stars:5,text:'Her karesi bir tablo. Sinema tarihinin en güzel aşk filmlerinden.'}]},
+  {id:4,title:'Moonlight',origTitle:'Moonlight',year:2016,type:'film',cat:'gay',country:'ABD',genre:'dram',desc:'Miami\'de büyüyen siyah, gay bir gencin kimliğini keşfetme yolculuğu. Kırılgan, sessiz ve yıkıcı bir Oscar şaheseri.',poster:'',emoji:'🌙',rating:4.9,platforms:[{name:'Netflix',url:'https://netflix.com'},{name:'Mubi',url:'https://mubi.com'}],reviews:[{user:'Oscar7ci',stars:5,text:'Yürek burkan bir şaheser.'}]},
+  {id:5,title:'Heartstopper',origTitle:'Heartstopper',year:2022,type:'dizi',cat:'queer',country:'ABD',genre:'romantik',desc:'İngiliz lisesinde başlayan tatlı ve kapsayıcı bir aşk hikayesi. Tüm queer kimliklerini temsil eden hafif, gerçek ve umut dolu bir dizi.',poster:'',emoji:'🍂',rating:4.6,platforms:[{name:'Netflix',url:'https://netflix.com'}],reviews:[]},
+  {id:6,title:'Eternal Yesterday',origTitle:'Eternal Yesterday',year:2022,type:'film',cat:'gay',country:'Tayland',genre:'dram',desc:'Tayland BL sinemasının en etkileyici yapıtlarından. Kayıp, zaman ve aşk üzerine derin ve şiirsel bir hikaye.',poster:'',emoji:'🌸',rating:4.4,platforms:[{name:'GagaOOLala',url:'https://gagaoolala.com'},{name:'YouTube',url:'https://youtube.com'}],reviews:[]},
+  {id:7,title:'Portrait of a Lady on Fire',origTitle:'Portrait de la jeune fille en feu',year:2019,type:'film',cat:'lezbiyen',country:'Avrupa',genre:'romantik',desc:'18. yüzyıl Fransa\'sında bir ressam ile modelinin sessiz, yakıcı aşkı. Céline Sciamma\'nın feminist başyapıtı.',poster:'',emoji:'🔥',rating:4.9,platforms:[{name:'Mubi',url:'https://mubi.com'}],reviews:[{user:'FilmKritik',stars:5,text:'Bakışlarla anlatılan bir aşk. Mubi\'nin mücevheri.'}]},
+  {id:8,title:'Disclosure',origTitle:'Disclosure',year:2020,type:'belgesel',cat:'trans',country:'ABD',genre:'belgesel',desc:'Hollywood\'un trans bireyleri nasıl tasvir ettiğini mercek altına alan öfkeli ve aydınlatıcı bir Netflix belgeseli.',poster:'',emoji:'🎞️',rating:4.6,platforms:[{name:'Netflix',url:'https://netflix.com'}],reviews:[]},
+  {id:9,title:'The Handmaiden',origTitle:'아가씨',year:2016,type:'film',cat:'lezbiyen',country:'Kore',genre:'dram',desc:'1930\'lar Kore\'sinde geçen sürpriz katmanlarla dolu bir aşk ve aldatmaca hikayesi. Park Chan-wook\'un sinematik şaheseri.',poster:'',emoji:'✂️',rating:4.8,platforms:[{name:'Mubi',url:'https://mubi.com'},{name:'YouTube',url:'https://youtube.com'}],reviews:[]},
+  {id:10,title:'Love, Victor',origTitle:'Love, Victor',year:2020,type:'dizi',cat:'gay',country:'ABD',genre:'romantik',desc:'Yeni bir şehre taşınan Victor\'ın kimliğini keşfetme yolculuğu. Sıcak, umut dolu ve kapsayıcı bir gençlik dizisi.',poster:'',emoji:'💌',rating:4.3,platforms:[{name:'YouTube',url:'https://youtube.com'}],reviews:[]},
+  {id:11,title:'POSE',origTitle:'POSE',year:2018,type:'dizi',cat:'queer',country:'ABD',genre:'dram',desc:'1980\'ler New York\'unda ball kültürünü ve trans topluluklarını anlatan tarihi ve güçlü bir FX dizisi.',poster:'',emoji:'👗',rating:4.7,platforms:[{name:'Netflix',url:'https://netflix.com'}],reviews:[]},
+  {id:12,title:'Killing Eve',origTitle:'Killing Eve',year:2018,type:'dizi',cat:'lezbiyen',country:'Avrupa',genre:'aksiyon',desc:'Bir MI5 ajanı ile suikastçı arasındaki tuhaf, obsesif ve kıvılcımlı ilişki. Queer gerilimin en iyisi.',poster:'',emoji:'🔪',rating:4.6,platforms:[{name:'Viki',url:'https://viki.com'}],reviews:[]},
+];
+
+let F = {cat:'tümü',genre:'tümü',country:'tümü',platform:'tümü',search:''};
+let cur = null, curR = 0, sOpen = false;
+
+function filtered() {
+  return db.filter(c => {
+    if(F.cat!=='tümü'&&c.cat!==F.cat) return false;
+    if(F.genre!=='tümü'&&c.genre!==F.genre) return false;
+    if(F.country!=='tümü'&&c.country!==F.country) return false;
+    if(F.platform!=='tümü'&&!c.platforms.some(p=>p.name===F.platform)) return false;
+    if(F.search&&!c.title.toLowerCase().includes(F.search.toLowerCase())&&!(c.origTitle||'').toLowerCase().includes(F.search.toLowerCase())) return false;
+    return true;
+  });
+}
+
+function renderHome() {
+  const items = filtered();
+  const wrap = document.getElementById('rows');
+  if(!items.length){wrap.innerHTML='<div class="empty">Bu kriterlere uyan içerik bulunamadı.</div>';return;}
+
+  const isDefault = F.cat==='tümü'&&F.genre==='tümü'&&F.country==='tümü'&&F.platform==='tümü'&&!F.search;
+
+  if(isDefault) {
+    const groups = [
+      {label:'Lezbiyen & GL', items:items.filter(c=>c.cat==='lezbiyen')},
+      {label:'Gay & BL', items:items.filter(c=>c.cat==='gay')},
+      {label:'Trans', items:items.filter(c=>c.cat==='trans')},
+      {label:'Queer & Biseksüel', items:items.filter(c=>c.cat==='queer'||c.cat==='biseksüel')},
+    ].filter(g=>g.items.length);
+    wrap.innerHTML = groups.map(g=>rowHtml(g.label,g.items)).join('');
+  } else {
+    wrap.innerHTML = rowHtml('Sonuçlar',items);
+  }
+}
+
+function rowHtml(label, items) {
+  return `<div>
+    <div class="row-head">
+      <h2>${label}</h2>
+      <span class="rcount">${items.length}</span>
+    </div>
+    <div class="prow">${items.map(cardHtml).join('')}</div>
+  </div>`;
+}
+
+function cardHtml(c) {
+  const tc = catTagClass[c.cat]||'ptag-cat';
+  return `<div class="pcard" onclick="openDetail(${c.id})">
+    <div class="pcard-img">
+      ${c.poster?`<img src="${c.poster}" alt="${c.title}" onerror="this.parentElement.innerHTML='<span style=font-size:3.5rem>${c.emoji}</span>'">`:`<span style="font-size:3.5rem">${c.emoji}</span>`}
+    </div>
+    <div class="pcard-hover"><div class="pcard-play">▶</div></div>
+    <div class="pcard-tags">
+      <span class="ptag ptag-${c.type}">${c.type}</span>
+      <span class="ptag ${tc}">${c.cat}</span>
+    </div>
+    <div class="pcard-info">
+      <div class="pcard-title">${c.title}</div>
+      <div class="pcard-sub">
+        <span class="pcard-year">${c.year} · ${c.country}</span>
+        ${c.rating?`<span class="pcard-rating">★${c.rating.toFixed(1)}</span>`:''}
+      </div>
+      <div class="pcard-plats">${c.platforms.map(p=>`<span class="pplat">${p.name}</span>`).join('')}</div>
+    </div>
+  </div>`;
+}
+
+function openDetail(id) {
+  cur = db.find(c=>c.id===id); if(!cur) return;
+  curR=0; updStars(0);
+
+  document.getElementById('dbackColor').style.background =
+    `radial-gradient(ellipse 80% 100% at 15% 40%, ${catBg[cur.cat]||'rgba(155,89,245,0.1)'} 0%, transparent 65%)`;
+
+  document.getElementById('dposter').innerHTML = cur.poster
+    ? `<img src="${cur.poster}" alt="${cur.title}" onerror="this.parentElement.innerHTML='<span style=font-size:5rem>${cur.emoji}</span>'">`
+    : `<span style="font-size:5rem">${cur.emoji}</span>`;
+
+  document.getElementById('dtagrow').innerHTML = `
+    <span class="dtag dtag-cat">${cur.cat.toUpperCase()}</span>
+    <span class="dtag dtag-type">${cur.type.toUpperCase()}</span>
+  `;
+  document.getElementById('dtitle').textContent = cur.title;
+  document.getElementById('dorig').textContent = cur.origTitle!==cur.title ? cur.origTitle : '';
+
+  const avg = cur.reviews.length ? (cur.reviews.reduce((a,b)=>a+b.stars,0)/cur.reviews.length).toFixed(1) : cur.rating;
+  document.getElementById('dstats').innerHTML = `
+    <span class="dstat hi">★ ${avg}</span>
+    <span class="dstat">${cur.year}</span>
+    <span class="dstat">${cur.country}</span>
+    <span class="dstat">${cur.genre}</span>
+    <span class="dstat">${cur.reviews.length} yorum</span>
+  `;
+  document.getElementById('ddesc').textContent = cur.desc;
+  document.getElementById('dwatch').innerHTML = cur.platforms.map(p=>
+    `<a href="${p.url}" target="_blank" class="wbtn ${PS[p.name]||'wb-other'}">▶ ${p.name}</a>`
+  ).join('');
+
+  renderRevs();
+  document.getElementById('revta').value='';
+  showPage('detailPage'); window.scrollTo(0,0);
+}
+
+function renderRevs() {
+  const el=document.getElementById('revlist');
+  if(!cur.reviews.length){el.innerHTML='<p class="norev">Henüz yorum yok — ilk sen yaz.</p>';return;}
+  el.innerHTML=cur.reviews.map(r=>`
+    <div class="revitem">
+      <div class="revtop"><span class="revuser">${r.user}</span><span class="revstars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</span></div>
+      <p class="revtext">${r.text}</p>
+    </div>
+  `).join('');
+}
+
+function setR(n){curR=n;updStars(n);}
+function updStars(n){document.querySelectorAll('#starrow .starr').forEach((s,i)=>s.classList.toggle('on',i<n));}
+function postReview(){
+  const t=document.getElementById('revta').value.trim();
+  if(!t||!curR){alert('Yorum ve puan gerekli!');return;}
+  cur.reviews.unshift({user:'Misafir',stars:curR,text:t});
+  cur.rating=cur.reviews.reduce((a,b)=>a+b.stars,0)/cur.reviews.length;
+  document.getElementById('revta').value='';setR(0);renderRevs();
+  document.querySelector('#dstats .hi').textContent='★ '+cur.rating.toFixed(1);
+}
+
+function filterCat(cat,btn){
+  F.cat=cat;
+  document.querySelectorAll('.ncat').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  renderHome();
+}
+function setF(type,val,btn,gid){
+  F[type]=val;
+  document.querySelectorAll('#'+gid+' .fc').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); renderHome();
+}
+function doSearch(v){F.search=v;renderHome();}
+function toggleSearch(){
+  sOpen=!sOpen;
+  document.getElementById('sbar').classList.toggle('open',sOpen);
+  if(sOpen)setTimeout(()=>document.querySelector('.sbar input').focus(),250);
+}
+
+// ADMIN — OMDB via Vercel proxy
+async function doTmdb(){
+  const q=document.getElementById('tq').value.trim(); if(!q)return;
+  const btn=document.getElementById('tbtn');
+  btn.disabled=true; btn.textContent='…';
+  document.getElementById('tresults').innerHTML='';
+
+  try {
+    const res = await fetch(`/api/omdb?s=${encodeURIComponent(q)}`);
+    const data = await res.json();
+
+    if(data.Response==='False') {
+      document.getElementById('tresults').innerHTML=`<p style="color:var(--white4);font-size:0.8rem;padding:0.5rem 0">"${q}" için sonuç bulunamadı. Farklı bir isim dene.</p>`;
+      btn.disabled=false; btn.textContent='Ara'; return;
+    }
+
+    window._omdbResults = data.Search.slice(0,5);
+    document.getElementById('tresults').innerHTML = window._omdbResults.map((r,i) => `
+      <div class="tr" id="tr${i}" onclick="selT(${i})">
+        <div class="tr-thumb">
+          ${r.Poster && r.Poster!=='N/A' ? `<img src="${r.Poster}" alt="${r.Title}">` : '🎬'}
+        </div>
+        <div class="tr-info">
+          <h4>${r.Title}</h4>
+          <p>${r.Type==='series'?'Dizi':'Film'} · ${r.Year}</p>
+        </div>
+        <span>Seç →</span>
+      </div>
+    `).join('');
+  } catch(e) {
+    document.getElementById('tresults').innerHTML=`<p style="color:var(--white4);font-size:0.8rem;padding:0.5rem 0">Bağlantı hatası. Tekrar dene.</p>`;
+  }
+
+  btn.disabled=false; btn.textContent='Ara';
+}
+
+async function selT(i){
+  document.querySelectorAll('.tr').forEach(e=>e.classList.remove('sel'));
+  document.getElementById('tr'+i).classList.add('sel');
+  const r = window._omdbResults[i]; if(!r) return;
+
+  const btn = document.getElementById('tbtn');
+  btn.disabled=true; btn.textContent='Yükleniyor…';
+
+  try {
+    const res = await fetch(`/api/omdb?i=${r.imdbID}`);
+    const d = await res.json();
+
+    document.getElementById('fTitle').value = d.Title||r.Title;
+    document.getElementById('fOrig').value = d.Title||r.Title;
+    document.getElementById('fYear').value = (d.Year||r.Year).substring(0,4);
+    document.getElementById('fDesc').value = d.Plot&&d.Plot!=='N/A' ? d.Plot : '';
+    document.getElementById('fType').value = d.Type==='series' ? 'dizi' : 'film';
+    document.getElementById('fPoster').value = d.Poster&&d.Poster!=='N/A' ? d.Poster : '';
+
+    if(d.imdbRating&&d.imdbRating!=='N/A') {
+      document.getElementById('fTitle').dataset.rating = (parseFloat(d.imdbRating)/2).toFixed(1);
+    }
+
+    if(d.Poster&&d.Poster!=='N/A') {
+      let prev = document.getElementById('posterPreview');
+      if(!prev) {
+        prev = document.createElement('img');
+        prev.id = 'posterPreview';
+        prev.style.cssText = 'width:80px;border-radius:6px;margin-top:0.5rem;display:block;border:1px solid var(--border)';
+        document.getElementById('fPoster').parentElement.appendChild(prev);
+      }
+      prev.src = d.Poster;
+    }
+  } catch(e) {
+    document.getElementById('fTitle').value = r.Title;
+    document.getElementById('fYear').value = (r.Year||'').substring(0,4);
+    document.getElementById('fType').value = r.Type==='series'?'dizi':'film';
+  }
+
+  btn.disabled=false; btn.textContent='Ara';
+}
+function addPlat(){
+  const row=document.createElement('div'); row.className='platrow';
+  row.innerHTML=`<select class="fs"><option>WebDrama</option><option>GagaOOLala</option><option>Viki</option><option>Netflix</option><option>YouTube</option><option>Mubi</option><option>Gain</option><option>PuhuTV</option><option>Prime</option><option>Diğer</option></select><input class="fi" placeholder="https://…"><button onclick="rmPlat(this)">✕</button>`;
+  document.getElementById('platrows').appendChild(row);
+}
+function rmPlat(btn){const rows=document.querySelectorAll('#platrows .platrow');if(rows.length>1)btn.closest('.platrow').remove();}
+function saveIt(){
+  const title=document.getElementById('fTitle').value.trim(); if(!title){alert('Başlık gerekli!');return;}
+  const plats=Array.from(document.querySelectorAll('#platrows .platrow')).map(r=>({name:r.querySelector('select').value,url:r.querySelector('input').value.trim()||'#'}));
+  db.unshift({id:Date.now(),title,origTitle:document.getElementById('fOrig').value||title,year:parseInt(document.getElementById('fYear').value)||2024,type:document.getElementById('fType').value,cat:document.getElementById('fCat').value,country:document.getElementById('fCountry').value,genre:document.getElementById('fGenre').value,desc:document.getElementById('fDesc').value||'Açıklama eklenmedi.',poster:document.getElementById('fPoster').value||'',emoji:'🎬',rating:0,platforms:plats.length?plats:[{name:'YouTube',url:'https://youtube.com'}],reviews:[]});
+  toast(); setTimeout(goHome,900);
+}
+
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function goHome(){showPage('homePage');renderHome();}
+function toast(){const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
+
+renderHome();
+</script>
+</body>
+</html>
