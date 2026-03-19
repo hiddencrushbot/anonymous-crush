@@ -1,3 +1,1 @@
-.fhhbhkxxildontreadm
-uuu
-iii
+.fhhbhk
