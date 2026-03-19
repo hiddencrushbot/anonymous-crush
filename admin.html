@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QueerView Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08080e;--surface:#0f0f1a;--card:#13131f;--border:#252535;--accent:#e879f9;--accent2:#fb7185;--accent3:#38bdf8;--text:#ededf5;--muted:#6b6b85;--green:#4ade80;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding:2rem;}
+.wrap{max-width:700px;margin:0 auto;}
+h1{font-family:'Syne',sans-serif;font-size:1.5rem;margin-bottom:.4rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.sub{color:var(--muted);font-size:.85rem;margin-bottom:2rem;}
+.tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;border-bottom:1px solid var(--border);}
+.tab{background:none;border:none;color:var(--muted);font-family:'Syne',sans-serif;font-size:.82rem;font-weight:600;padding:.65rem 1rem;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;margin-bottom:-1px;white-space:nowrap;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-badge{background:var(--accent2);color:white;font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:100px;margin-left:.4rem;}
+.panel{display:none;}
+.panel.active{display:block;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.25rem;}
+.card-title{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;margin-bottom:1rem;}
+label{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:.4rem;}
+input,select,textarea{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;padding:.7rem 1rem;border-radius:10px;outline:none;transition:border-color .2s;margin-bottom:1rem;}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);}
+textarea{resize:vertical;min-height:90px;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.row input,.row select{margin-bottom:0;}
+.omdb-row{display:flex;gap:.75rem;margin-bottom:1rem;}
+.omdb-row input{flex:1;margin-bottom:0;}
+.btn-sm{background:var(--surface);border:1px solid var(--accent);color:var(--accent);font-family:'Syne',sans-serif;font-size:.82rem;font-weight:600;padding:.7rem 1.1rem;border-radius:10px;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.btn-sm:hover{background:rgba(232,121,249,.1);}
+.btn-sm:disabled{opacity:.4;cursor:not-allowed;}
+.preview{display:flex;gap:1rem;align-items:flex-start;padding:1rem;background:var(--surface);border-radius:10px;margin-bottom:1rem;}
+.preview img{width:70px;border-radius:8px;aspect-ratio:2/3;object-fit:cover;flex-shrink:0;}
+.preview-info .pt{font-weight:600;margin-bottom:.25rem;font-size:.92rem;}
+.preview-info .pm{font-size:.74rem;color:var(--muted);}
+.api-box{background:rgba(232,121,249,.05);border:1px solid rgba(232,121,249,.2);border-radius:12px;padding:1rem 1.25rem;display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:1.25rem;}
+.api-box p{font-size:.78rem;color:var(--muted);flex:1;min-width:140px;}
+.api-box p strong{color:var(--text);}
+.api-box input{flex:1;min-width:180px;margin-bottom:0;font-family:'DM Mono',monospace;font-size:.75rem;}
+.api-save{background:var(--accent);border:none;color:white;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;padding:.5rem 1rem;border-radius:8px;cursor:pointer;}
+.api-ok{font-size:.72rem;color:var(--green);display:none;}
+.api-ok.show{display:block;}
+.plat-preview{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.5rem;min-height:24px;}
+.pb{font-size:.68rem;font-weight:600;padding:.2rem .55rem;border-radius:6px;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);color:var(--accent3);}
+.save-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:white;font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;padding:1rem;border-radius:12px;cursor:pointer;transition:opacity .2s,transform .1s;}
+.save-btn:hover{opacity:.9;transform:translateY(-1px);}
+.bulk-area{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:.78rem;padding:.85rem 1rem;border-radius:10px;outline:none;resize:vertical;min-height:160px;margin-bottom:.75rem;}
+.bulk-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'Syne',sans-serif;font-size:.85rem;font-weight:600;padding:.7rem 1.25rem;border-radius:10px;cursor:pointer;transition:all .2s;width:100%;}
+.bulk-btn:hover{border-color:var(--accent);color:var(--accent);}
+.log{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;font-family:'DM Mono',monospace;font-size:.73rem;max-height:260px;overflow-y:auto;margin-top:1rem;}
+.ll{margin-bottom:.25rem;color:var(--muted);}
+.ll.ok{color:var(--green);}
+.ll.err{color:var(--accent2);}
+.ll.info{color:var(--accent);}
+/* FILM LISTESI */
+.movie-item{display:flex;align-items:center;gap:1rem;padding:.85rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:.6rem;cursor:pointer;transition:all .2s;}
+.movie-item:hover{border-color:var(--accent3);}
+.movie-item img{width:40px;height:60px;object-fit:cover;border-radius:6px;flex-shrink:0;}
+.movie-item-ph{width:40px;height:60px;background:var(--card);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.movie-item-info{flex:1;}
+.movie-item-title{font-weight:600;font-size:.9rem;margin-bottom:.2rem;}
+.movie-item-meta{font-size:.72rem;color:var(--muted);}
+.movie-item-edit{background:none;border:1px solid var(--border);color:var(--muted);font-size:.72rem;font-family:'Syne',sans-serif;padding:.3rem .7rem;border-radius:6px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.movie-item-edit:hover{border-color:var(--accent3);color:var(--accent3);}
+/* PLATFORM SATIRLARI */
+.plat-row{display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem;}
+.plat-row select{width:160px;margin-bottom:0;flex-shrink:0;font-size:.82rem;padding:.55rem .75rem;}
+.plat-row input{flex:1;margin-bottom:0;font-size:.82rem;padding:.55rem .75rem;}
+.plat-row .del{background:none;border:1px solid var(--border);color:var(--muted);width:32px;height:36px;border-radius:8px;cursor:pointer;font-size:.9rem;flex-shrink:0;transition:all .2s;}
+.plat-row .del:hover{border-color:var(--accent2);color:var(--accent2);}
+.add-plat-btn{background:none;border:1px dashed var(--border);color:var(--muted);font-size:.78rem;font-family:'DM Sans',sans-serif;padding:.5rem 1rem;border-radius:8px;cursor:pointer;width:100%;transition:all .2s;margin-bottom:.75rem;}
+.add-plat-btn:hover{border-color:var(--accent);color:var(--accent);}
+/* ONERILER */
+.sug-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.sug-card.done{opacity:.4;}
+.sug-title-txt{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.4rem;}
+.sug-meta{font-size:.75rem;color:var(--muted);display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:.75rem;}
+.sug-note{font-size:.8rem;color:var(--text);background:var(--surface);border-radius:8px;padding:.6rem .85rem;margin-bottom:.85rem;line-height:1.5;}
+.sug-actions{display:flex;gap:.5rem;flex-wrap:wrap;}
+.sug-accept{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:var(--green);font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;padding:.45rem 1rem;border-radius:8px;cursor:pointer;}
+.sug-accept:hover{background:rgba(74,222,128,.2);}
+.sug-reject{background:rgba(251,113,133,.1);border:1px solid rgba(251,113,133,.3);color:var(--accent2);font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;padding:.45rem 1rem;border-radius:8px;cursor:pointer;}
+.sug-reject:hover{background:rgba(251,113,133,.2);}
+.reload-btn{background:none;border:1px solid var(--border);color:var(--muted);font-size:.75rem;font-family:'Syne',sans-serif;padding:.35rem .85rem;border-radius:8px;cursor:pointer;transition:all .2s;margin-bottom:1rem;}
+.reload-btn:hover{border-color:var(--accent);color:var(--accent);}
+.empty-sug{text-align:center;padding:3rem 2rem;color:var(--muted);font-size:.88rem;}
+.tag{font-size:.63rem;font-weight:600;letter-spacing:.05em;padding:.2rem .5rem;border-radius:4px;text-transform:uppercase;}
+.tl{background:rgba(232,121,249,.15);color:var(--accent);}
+.tg{background:rgba(56,189,248,.15);color:var(--accent3);}
+.tt{background:rgba(251,191,36,.15);color:#fbbf24;}
+.tb{background:rgba(251,113,133,.15);color:var(--accent2);}
+.tq{background:rgba(167,139,250,.15);color:#a78bfa;}
+select option{background:#1a1a2e;}
+.cancel-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:.85rem 1.25rem;border-radius:12px;cursor:pointer;font-family:'Syne',sans-serif;font-size:.85rem;white-space:nowrap;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>QueerView Admin</h1>
+  <p class="sub">Film ekle · Düzenle · Önerileri onayla</p>
+
+  <div class="api-box">
+    <p><strong>Anthropic API Key</strong></p>
+    <input type="password" id="apiKey" placeholder="sk-ant-...">
+    <button class="api-save" onclick="saveKey()">Kaydet</button>
+    <span class="api-ok" id="apiOk">✓ Aktif</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('add')">✦ Film Ekle</button>
+    <button class="tab" onclick="switchTab('bulk')">⚡ Toplu Ekle</button>
+    <button class="tab" onclick="switchTab('edit')">✏️ Düzenle</button>
+    <button class="tab" id="sugTab" onclick="switchTab('suggestions')">💌 Öneriler <span class="tab-badge" id="sugBadge" style="display:none">0</span></button>
+  </div>
+
+  <!-- FİLM EKLE -->
+  <div class="panel active" id="panel-add">
+    <div class="card">
+      <div class="card-title" style="color:var(--accent)">✦ Film / Dizi Ekle</div>
+      <label>Film / Dizi Adı</label>
+      <div class="omdb-row">
+        <input id="omdbTitle" type="text" placeholder="örn: I Told Sunset About You">
+        <button class="btn-sm" onclick="fetchOMDB()">Çek ↓</button>
+      </div>
+      <div id="preview" style="display:none"></div>
+      <div class="row">
+        <div><label>Başlık</label><input id="title" type="text"></div>
+        <div><label>Orijinal Başlık</label><input id="origTitle" type="text"></div>
+      </div>
+      <div class="row">
+        <div><label>Yıl</label><input id="year" type="text" placeholder="2021"></div>
+        <div><label>Tür</label>
+          <select id="type"><option value="dizi">Dizi</option><option value="film">Film</option><option value="belgesel">Belgesel</option></select>
+        </div>
+      </div>
+      <div class="row">
+        <div><label>Queer Kategori</label>
+          <select id="category" onchange="updatePlatPreview()">
+            <option value="lezbiyen">🌸 Lezbiyen / GL</option>
+            <option value="gay">💙 Gay / BL</option>
+            <option value="trans">🌼 Trans</option>
+            <option value="biseksüel">💜 Biseksüel</option>
+            <option value="queer">🌈 Queer</option>
+          </select>
+        </div>
+        <div><label>Ülke</label><input id="country" type="text" placeholder="Tayland, Tayvan..." oninput="updatePlatPreview()"></div>
+      </div>
+      <div style="margin-bottom:1rem"><label>Poster URL</label><input id="poster" type="text" placeholder="https://..."></div>
+      <div style="margin-bottom:1rem">
+        <label>Türkçe Açıklama
+          <button class="btn-sm" id="translateBtn" onclick="translateDesc()" style="margin-left:.5rem;padding:.25rem .7rem;font-size:.7rem">✨ Çevir</button>
+        </label>
+        <textarea id="desc" placeholder="OMDB'den çekince otomatik çevrilir..."></textarea>
+      </div>
+      <div style="margin-bottom:1rem">
+        <label>Atanacak Platformlar</label>
+        <div class="plat-preview" id="platPreview"></div>
+      </div>
+      <button class="save-btn" onclick="saveMovie()">💾 Kaydet & Yayınla</button>
+    </div>
+    <div class="log" id="log1"><div class="ll">— hazır...</div></div>
+  </div>
+
+  <!-- TOPLU EKLE -->
+  <div class="panel" id="panel-bulk">
+    <div class="card">
+      <div class="card-title" style="color:var(--accent2)">⚡ Toplu Ekle</div>
+      <p style="font-size:.78rem;color:var(--muted);margin-bottom:.85rem">Her satıra bir film — OMDB'den çeker, Claude Türkçe'ye çevirir, ülkeye göre platform atar.</p>
+      <textarea class="bulk-area" id="bulkList" placeholder="Portrait of a Lady on Fire&#10;Carol&#10;Disobedience&#10;Ammonite"></textarea>
+      <div class="row">
+        <div><label>Kategori</label>
+          <select id="bulkCat">
+            <option value="lezbiyen">🌸 Lezbiyen / GL</option>
+            <option value="gay">💙 Gay / BL</option>
+            <option value="queer">🌈 Queer</option>
+            <option value="trans">🌼 Trans</option>
+            <option value="biseksüel">💜 Biseksüel</option>
+          </select>
+        </div>
+        <div><label>Varsayılan Ülke (opsiyonel)</label><input id="bulkCountry" type="text" placeholder="Boş = OMDB'den" style="margin-bottom:0"></div>
+      </div>
+      <button class="bulk-btn" onclick="bulkAdd()">⚡ Hepsini Ekle</button>
+    </div>
+    <div class="log" id="log2"><div class="ll">— hazır...</div></div>
+  </div>
+
+  <!-- FİLMLERİ DÜZENLE -->
+  <div class="panel" id="panel-edit">
+    <div class="card">
+      <div class="card-title" style="color:var(--accent3)">✏️ Film Ara & Düzenle</div>
+      <div class="omdb-row">
+        <input id="editSearch" type="text" placeholder="Film adı ile ara..." oninput="searchMovies()">
+        <button class="btn-sm" style="border-color:var(--accent3);color:var(--accent3)" onclick="loadAllMovies()">Tümü</button>
+      </div>
+      <div id="editList"><div style="text-align:center;color:var(--muted);padding:2rem;font-size:.85rem">Aramak için yaz veya "Tümü"ne bas</div></div>
+    </div>
+
+    <!-- DÜZENLEME FORMU -->
+    <div class="card" id="editForm" style="display:none">
+      <div class="card-title" style="color:var(--accent3)">✏️ <span id="editFormTitle"></span></div>
+      <div style="margin-bottom:1rem">
+        <label>Türkçe Açıklama</label>
+        <textarea id="editDesc"></textarea>
+      </div>
+      <div class="row">
+        <div><label>Kategori</label>
+          <select id="editCat" style="margin-bottom:0">
+            <option value="lezbiyen">🌸 Lezbiyen / GL</option>
+            <option value="gay">💙 Gay / BL</option>
+            <option value="trans">🌼 Trans</option>
+            <option value="biseksüel">💜 Biseksüel</option>
+            <option value="queer">🌈 Queer</option>
+          </select>
+        </div>
+        <div><label>Ülke</label><input id="editCountry" type="text" style="margin-bottom:0"></div>
+      </div>
+      <div style="margin-top:1rem;margin-bottom:.5rem">
+        <label>Platform Linkleri (ad + URL)</label>
+        <div id="editPlatList"></div>
+        <button class="add-plat-btn" onclick="addEditPlatRow()">+ Platform Ekle</button>
+      </div>
+      <div style="display:flex;gap:.75rem">
+        <button class="save-btn" onclick="updateMovie()">💾 Güncelle</button>
+        <button class="cancel-btn" onclick="cancelEdit()">İptal</button>
+      </div>
+    </div>
+    <div class="log" id="log3"><div class="ll">— film seç...</div></div>
+  </div>
+
+  <!-- ÖNERİLER -->
+  <div class="panel" id="panel-suggestions">
+    <button class="reload-btn" onclick="loadSuggestions()">↻ Yenile</button>
+    <div id="sugList"><div class="empty-sug">Yükleniyor...</div></div>
+  </div>
+</div>
+
+<script>
+const SB='https://hvctuvptiwjrtlcspqsb.supabase.co';
+const SK='sb_publishable_P5MNhMqfCqdg5yFXTEQLbQ_CS1MLVgJ';
+const OMDB='59128d09';
+const PLATFORMS=['WebDramaTurkey','GagaOOLala','Viki','Netflix','Mubi','YouTube','Prime','PuhuTV','Gain','Diğer'];
+let anthropicKey=localStorage.getItem('qv_admin_key')||'';
+let allMoviesCache=[];
+let editingMovieId=null;
+
+window.onload=()=>{
+  if(anthropicKey){document.getElementById('apiKey').value=anthropicKey;document.getElementById('apiOk').classList.add('show');}
+  updatePlatPreview();
+  loadSuggestionCount();
+};
+
+function saveKey(){
+  anthropicKey=document.getElementById('apiKey').value.trim();
+  if(!anthropicKey)return;
+  localStorage.setItem('qv_admin_key',anthropicKey);
+  document.getElementById('apiOk').classList.add('show');
+}
+
+function switchTab(tab){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab')[['add','bulk','edit','suggestions'].indexOf(tab)].classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  if(tab==='suggestions')loadSuggestions();
+}
+
+function log(id,msg,type=''){
+  const d=document.getElementById(id);
+  const l=document.createElement('div');l.className='ll '+(type||'');l.textContent=msg;
+  d.appendChild(l);d.scrollTop=d.scrollHeight;
+}
+
+function guessPlatforms(country){
+  const c=(country||'').toLowerCase();
+  if(c.includes('tayland')||c.includes('thailand'))return['WebDramaTurkey','GagaOOLala'];
+  if(c.includes('tayvan')||c.includes('taiwan'))return['GagaOOLala','Viki'];
+  if(c.includes('kore')||c.includes('korea'))return['Viki','Netflix'];
+  if(c.includes('japon')||c.includes('japan'))return['GagaOOLala','Viki'];
+  if(c.includes('çin')||c.includes('china'))return['GagaOOLala'];
+  if(c.includes('france')||c.includes('germany')||c.includes('uk')||c.includes('avrupa'))return['Mubi'];
+  if(c.includes('abd')||c.includes('usa')||c.includes('united states'))return['Netflix','Prime'];
+  return[];
+}
+
+function updatePlatPreview(){
+  const country=document.getElementById('country')?.value||'';
+  const plats=guessPlatforms(country);
+  const prev=document.getElementById('platPreview');
+  if(prev)prev.innerHTML=plats.length?plats.map(p=>`<span class="pb">${p}</span>`).join(''):'<span style="font-size:.75rem;color:var(--muted)">Ülke gir</span>';
+}
+
+async function fetchOMDB(titleOverride,logId='log1'){
+  const title=titleOverride||document.getElementById('omdbTitle').value.trim();
+  if(!title){log(logId,'⚠ Film adı gir','err');return null;}
+  log(logId,`🔍 "${title}" aranıyor...`);
+  try{
+    const r=await fetch(`https://www.omdbapi.com/?t=${encodeURIComponent(title)}&apikey=${OMDB}`);
+    const d=await r.json();
+    if(d.Response==='False'){log(logId,`✗ Bulunamadı: ${title}`,'err');return null;}
+    if(!titleOverride){
+      document.getElementById('title').value=d.Title||'';
+      document.getElementById('origTitle').value=d.Title||'';
+      document.getElementById('year').value=(d.Year||'').slice(0,4);
+      document.getElementById('poster').value=d.Poster&&d.Poster!=='N/A'?d.Poster:'';
+      document.getElementById('desc').value=d.Plot&&d.Plot!=='N/A'?d.Plot:'';
+      document.getElementById('country').value=d.Country||'';
+      document.getElementById('type').value=d.Type==='series'?'dizi':'film';
+      updatePlatPreview();
+      const prev=document.getElementById('preview');
+      prev.style.display='block';
+      prev.innerHTML=`<div class="preview">${d.Poster&&d.Poster!=='N/A'?`<img src="${d.Poster}">`:''}
+        <div class="preview-info"><div class="pt">${d.Title}</div>
+        <div class="pm">${d.Year} · ${d.Country||''} · ${d.Genre||''}</div></div></div>`;
+      log(logId,`✓ "${d.Title}" bulundu`,'ok');
+      if(anthropicKey&&d.Plot&&d.Plot!=='N/A')translateDesc();
+    }
+    return d;
+  }catch(e){log(logId,'✗ OMDB: '+e.message,'err');return null;}
+}
+
+async function translateDesc(){
+  const desc=document.getElementById('desc').value.trim();
+  const title=document.getElementById('title').value.trim();
+  if(!desc||!anthropicKey)return;
+  log('log1','✨ Çevriliyor...');
+  document.getElementById('translateBtn').disabled=true;
+  const tr=await claudeTranslate(desc,title);
+  if(tr){document.getElementById('desc').value=tr;log('log1','✓ Türkçe hazır','ok');}
+  document.getElementById('translateBtn').disabled=false;
+}
+
+async function claudeTranslate(text,title){
+  if(!anthropicKey||!text)return text;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':anthropicKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,
+        messages:[{role:'user',content:`"${title}" filminin şu İngilizce açıklamasını akıcı, doğal Türkçe'ye çevir. Sadece çeviriyi yaz:\n\n${text}`}]})
+    });
+    const data=await r.json();
+    return data.content?.map(c=>c.text||'').join('')||text;
+  }catch(e){return text;}
+}
+
+async function saveMovie(movieData,logId='log1'){
+  const country=movieData?.country||document.getElementById('country').value.trim();
+  const platforms=guessPlatforms(country);
+  const movie=movieData||{
+    title:document.getElementById('title').value.trim(),
+    original_title:document.getElementById('origTitle').value.trim(),
+    year:document.getElementById('year').value.trim(),
+    type:document.getElementById('type').value,
+    category:document.getElementById('category').value,
+    country,
+    poster:document.getElementById('poster').value.trim()||null,
+    description:document.getElementById('desc').value.trim(),
+    platforms,genre:[]
+  };
+  if(!movie.title){log(logId,'⚠ Başlık boş!','err');return false;}
+  try{
+    const r=await fetch(`${SB}/rest/v1/movies`,{
+      method:'POST',
+      headers:{'apikey':SK,'Authorization':`Bearer ${SK}`,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify(movie)
+    });
+    if(r.ok||r.status===201){
+      log(logId,`✓ "${movie.title}" eklendi!`,'ok');
+      if(!movieData){
+        ['title','origTitle','year','country','poster','desc','omdbTitle'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+        document.getElementById('preview').style.display='none';
+        updatePlatPreview();
+      }
+      return true;
+    }else{const e=await r.text();log(logId,`✗ ${movie.title}: ${e}`,'err');return false;}
+  }catch(e){log(logId,'✗ '+e.message,'err');return false;}
+}
+
+async function bulkAdd(){
+  const lines=document.getElementById('bulkList').value.split('\n').map(l=>l.trim()).filter(Boolean);
+  const cat=document.getElementById('bulkCat').value;
+  const forceCountry=document.getElementById('bulkCountry').value.trim();
+  if(!lines.length){log('log2','⚠ Liste boş','err');return;}
+  log('log2',`⚡ ${lines.length} içerik ekleniyor...`,'info');
+  for(const title of lines){
+    const d=await fetchOMDB(title,'log2');
+    if(d){
+      const country=forceCountry||d.Country||'';
+      let desc=d.Plot&&d.Plot!=='N/A'?d.Plot:'';
+      if(desc&&anthropicKey){
+        log('log2',`  🌐 "${d.Title}" çevriliyor...`);
+        desc=await claudeTranslate(desc,d.Title);
+      }
+      await saveMovie({
+        title:d.Title,original_title:d.Title,
+        year:(d.Year||'').slice(0,4),
+        type:d.Type==='series'?'dizi':'film',
+        category:cat,country,
+        poster:d.Poster&&d.Poster!=='N/A'?d.Poster:null,
+        description:desc,
+        platforms:guessPlatforms(country),
+        genre:d.Genre?d.Genre.split(', '):[]
+      },'log2');
+    }
+    await new Promise(res=>setTimeout(res,1200));
+  }
+  log('log2','✅ Tamamlandı!','ok');
+}
+
+// ---- DÜZENLEME ----
+async function loadAllMovies(){
+  const r=await fetch(`${SB}/rest/v1/movies?select=id,title,poster,category,year,country,type&order=title.asc`,{headers:{'apikey':SK,'Authorization':`Bearer ${SK}`}});
+  allMoviesCache=await r.json();
+  renderMovieList(allMoviesCache);
+}
+
+function searchMovies(){
+  const q=document.getElementById('editSearch').value.trim().toLowerCase();
+  if(!q){document.getElementById('editList').innerHTML='<div style="text-align:center;color:var(--muted);padding:1rem;font-size:.85rem">Aramak için yaz veya "Tümü"ne bas</div>';return;}
+  if(!allMoviesCache.length){loadAllMovies().then(()=>filterAndRender(q));return;}
+  filterAndRender(q);
+}
+
+function filterAndRender(q){
+  const filtered=allMoviesCache.filter(m=>(m.title||'').toLowerCase().includes(q));
+  renderMovieList(filtered);
+}
+
+function renderMovieList(movies){
+  const list=document.getElementById('editList');
+  if(!movies.length){list.innerHTML='<div style="text-align:center;color:var(--muted);padding:1rem;font-size:.85rem">Sonuç bulunamadı</div>';return;}
+  list.innerHTML=movies.map(m=>`
+    <div class="movie-item">
+      ${m.poster?`<img src="${m.poster}" onerror="this.style.display='none'">`:`<div class="movie-item-ph">${ej(m.category)}</div>`}
+      <div class="movie-item-info">
+        <div class="movie-item-title">${m.title||''}</div>
+        <div class="movie-item-meta">${m.year||''} · ${m.country||''} · ${tl_(m.category)}</div>
+      </div>
+      <button class="movie-item-edit" onclick="openEditForm('${m.id}')">Düzenle →</button>
+    </div>`).join('');
+}
+
+async function openEditForm(id){
+  editingMovieId=id;
+  const r=await fetch(`${SB}/rest/v1/movies?id=eq.${id}&select=*`,{headers:{'apikey':SK,'Authorization':`Bearer ${SK}`}});
+  const data=await r.json();
+  const m=data[0];
+  if(!m)return;
+  document.getElementById('editFormTitle').textContent=m.title;
+  document.getElementById('editDesc').value=m.description||'';
+  document.getElementById('editCat').value=m.category||'queer';
+  document.getElementById('editCountry').value=m.country||'';
+
+  // platform linklerini doldur
+  const platList=document.getElementById('editPlatList');
+  platList.innerHTML='';
+  const pl=Array.isArray(m.platform_links)?m.platform_links:(Array.isArray(m.platforms)?m.platforms.map(p=>({name:p,url:''})):[]);
+  pl.forEach(p=>addEditPlatRow(p.name||p,p.url||''));
+
+  document.getElementById('editForm').style.display='block';
+  document.getElementById('editForm').scrollIntoView({behavior:'smooth'});
+  log('log3',`"${m.title}" düzenleniyor...`,'info');
+}
+
+function addEditPlatRow(name='',url=''){
+  const list=document.getElementById('editPlatList');
+  const row=document.createElement('div');row.className='plat-row';
+  row.innerHTML=`
+    <select>${PLATFORMS.map(p=>`<option value="${p}" ${p===name?'selected':''}>${p}</option>`).join('')}</select>
+    <input type="text" placeholder="https://... (opsiyonel)" value="${url}">
+    <button class="del" onclick="this.parentElement.remove()">✕</button>`;
+  list.appendChild(row);
+}
+
+async function updateMovie(){
+  if(!editingMovieId)return;
+  const platRows=[...document.querySelectorAll('#editPlatList .plat-row')];
+  const platform_links=platRows.map(row=>({
+    name:row.querySelector('select').value,
+    url:row.querySelector('input').value.trim()
+  })).filter(p=>p.name);
+  const platforms=platform_links.map(p=>p.name);
+
+  const update={
+    description:document.getElementById('editDesc').value.trim(),
+    category:document.getElementById('editCat').value,
+    country:document.getElementById('editCountry').value.trim(),
+    platform_links,platforms
+  };
+  try{
+    const r=await fetch(`${SB}/rest/v1/movies?id=eq.${editingMovieId}`,{
+      method:'PATCH',
+      headers:{'apikey':SK,'Authorization':`Bearer ${SK}`,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify(update)
+    });
+    if(r.ok){
+      log('log3','✓ Güncellendi!','ok');
+      cancelEdit();
+      loadAllMovies();
+    }else{log('log3','✗ Güncelleme hatası','err');}
+  }catch(e){log('log3','✗ '+e.message,'err');}
+}
+
+function cancelEdit(){
+  editingMovieId=null;
+  document.getElementById('editForm').style.display='none';
+  document.getElementById('editPlatList').innerHTML='';
+}
+
+// ---- ÖNERİLER ----
+async function loadSuggestionCount(){
+  try{
+    const r=await fetch(`${SB}/rest/v1/suggestions?select=id&status=is.null`,{headers:{'apikey':SK,'Authorization':`Bearer ${SK}`}});
+    const data=await r.json();
+    const badge=document.getElementById('sugBadge');
+    if(data.length>0){badge.style.display='inline';badge.textContent=data.length;}
+    else badge.style.display='none';
+  }catch(e){}
+}
+
+async function loadSuggestions(){
+  const list=document.getElementById('sugList');
+  list.innerHTML='<div class="empty-sug">Yükleniyor...</div>';
+  try{
+    const r=await fetch(`${SB}/rest/v1/suggestions?select=*&order=created_at.desc`,{headers:{'apikey':SK,'Authorization':`Bearer ${SK}`}});
+    const data=await r.json();
+    if(!data.length){list.innerHTML='<div class="empty-sug">Henüz öneri yok 🌈</div>';return;}
+    list.innerHTML=data.map(s=>`
+      <div class="sug-card ${s.status?'done':''}" id="sug-${s.id}">
+        <div class="sug-title-txt">${s.title||'—'}</div>
+        <div class="sug-meta">
+          <span class="tag ${tc_(s.category)}">${tl_(s.category)}</span>
+          ${s.country?`<span>📍 ${s.country}</span>`:''}
+          ${s.platform_url?`<span>▶ ${s.platform_url}</span>`:''}
+          <span style="margin-left:auto">${formatDate(s.created_at)}</span>
+          ${s.status?`<span style="color:var(--green)">✓ ${s.status}</span>`:''}
+        </div>
+        ${s.note?`<div class="sug-note">${escHtml(s.note)}</div>`:''}
+        ${!s.status?`<div class="sug-actions">
+          <button class="sug-accept" onclick="acceptSuggestion('${s.id}','${escAttr(s.title)}','${escAttr(s.category||'')}','${escAttr(s.country||'')}')">✓ Ekle</button>
+          <button class="sug-reject" onclick="rejectSuggestion('${s.id}')">✕ Reddet</button>
+        </div>`:''}
+      </div>`).join('');
+  }catch(e){list.innerHTML='<div class="empty-sug">Yüklenemedi.</div>';}
+}
+
+async function acceptSuggestion(id,title,category,country){
+  switchTab('add');
+  document.getElementById('omdbTitle').value=title;
+  if(category)document.getElementById('category').value=category;
+  await fetchOMDB();
+  if(country)document.getElementById('country').value=country;
+  updatePlatPreview();
+  await fetch(`${SB}/rest/v1/suggestions?id=eq.${id}`,{
+    method:'PATCH',
+    headers:{'apikey':SK,'Authorization':`Bearer ${SK}`,'Content-Type':'application/json'},
+    body:JSON.stringify({status:'eklendi'})
+  });
+  loadSuggestionCount();
+}
+
+async function rejectSuggestion(id){
+  await fetch(`${SB}/rest/v1/suggestions?id=eq.${id}`,{
+    method:'PATCH',
+    headers:{'apikey':SK,'Authorization':`Bearer ${SK}`,'Content-Type':'application/json'},
+    body:JSON.stringify({status:'reddedildi'})
+  });
+  const el=document.getElementById('sug-'+id);
+  if(el)el.classList.add('done');
+  loadSuggestionCount();
+}
+
+function tc_(c){return{lezbiyen:'tl',gay:'tg',trans:'tt','biseksüel':'tb',queer:'tq'}[c]||'tq';}
+function tl_(c){return{lezbiyen:'Lezbiyen',gay:'Gay · BL',trans:'Trans','biseksüel':'Biseksüel',queer:'Queer'}[c]||c||'';}
+function ej(c){return{lezbiyen:'🌸',gay:'💙',trans:'🌼','biseksüel':'💜',queer:'🌈'}[c]||'🎬';}
+function formatDate(d){return new Date(d).toLocaleDateString('tr-TR',{day:'numeric',month:'short'});}
+function escHtml(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML;}
+function escAttr(t){return(t||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
+</script>
+</body>
+</html>
