@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeeStudio — Tişört Tasarım Uygulaması</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0f;
+    --panel: #181819;
+    --panel2: #202022;
+    --border: #2e2e32;
+    --accent: #f0e040;
+    --accent2: #ff5c3a;
+    --text: #f0efe8;
+    --muted: #7a7a84;
+    --white: #ffffff;
+    --shirt-w: 320px;
+    --shirt-h: 380px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+    position: sticky; top: 0; z-index: 100;
+  }
+  header .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--accent);
+  }
+  header .logo span { color: var(--text); }
+  .header-actions { display: flex; gap: 10px; }
+  .btn {
+    padding: 8px 18px; border-radius: 6px; border: none;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all .15s;
+  }
+  .btn-outline {
+    background: transparent; border: 1.5px solid var(--border);
+    color: var(--text);
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-accent { background: var(--accent); color: #111; }
+  .btn-accent:hover { background: #ffe818; transform: translateY(-1px); }
+  .btn-danger { background: var(--accent2); color: #fff; font-size: 12px; padding: 6px 12px; }
+  .btn-danger:hover { background: #e04a2a; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 4px; }
+
+  .workspace {
+    display: grid;
+    grid-template-columns: 280px 1fr 300px;
+    flex: 1;
+    height: calc(100vh - 56px);
+    overflow: hidden;
+  }
+
+  /* SIDE PANELS */
+  .side-panel {
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    display: flex; flex-direction: column;
+  }
+  .side-panel.right { border-right: none; border-left: 1px solid var(--border); }
+  .panel-section {
+    border-bottom: 1px solid var(--border);
+    padding: 16px;
+  }
+  .panel-section-title {
+    font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 12px;
+  }
+
+  /* COLOR SWATCHES */
+  .shirt-colors {
+    display: flex; flex-wrap: wrap; gap: 7px;
+  }
+  .color-swatch {
+    width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+    border: 2px solid transparent; transition: all .15s;
+    position: relative;
+  }
+  .color-swatch.active { border-color: var(--accent); transform: scale(1.1); }
+  .color-swatch:hover { transform: scale(1.08); }
+
+  /* SIZE BUTTONS */
+  .size-grid { display: flex; gap: 6px; flex-wrap: wrap; }
+  .size-btn {
+    width: 42px; height: 34px; border-radius: 5px;
+    border: 1.5px solid var(--border); background: transparent;
+    color: var(--text); font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all .15s;
+  }
+  .size-btn.active { border-color: var(--accent); background: rgba(240,224,64,.12); color: var(--accent); }
+  .size-btn:hover { border-color: var(--muted); }
+
+  /* TOOL TABS */
+  .tool-tabs {
+    display: flex; gap: 0; border-bottom: 1px solid var(--border);
+  }
+  .tool-tab {
+    flex: 1; padding: 11px 6px; text-align: center; cursor: pointer;
+    font-size: 11px; font-weight: 600; color: var(--muted);
+    border-bottom: 2px solid transparent; transition: all .15s;
+    letter-spacing: .5px; text-transform: uppercase;
+  }
+  .tool-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* CANVAS AREA */
+  .canvas-area {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 20px; padding: 30px;
+    background: #131314;
+    position: relative; overflow: hidden;
+  }
+  .canvas-area::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(240,224,64,.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* VIEW TOGGLE */
+  .view-toggle {
+    display: flex; gap: 8px; z-index: 2;
+  }
+  .view-btn {
+    padding: 7px 18px; border-radius: 20px; border: 1.5px solid var(--border);
+    background: transparent; color: var(--muted); font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s;
+  }
+  .view-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(240,224,64,.08); }
+
+  /* SHIRT SVG CANVAS */
+  .shirt-canvas-wrapper {
+    position: relative;
+    width: var(--shirt-w);
+    height: var(--shirt-h);
+    filter: drop-shadow(0 20px 60px rgba(0,0,0,.7));
+  }
+  .shirt-svg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; pointer-events: none; }
+  #designCanvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    cursor: crosshair;
+  }
+  .design-layer {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+  }
+  /* Design elements on shirt */
+  .design-el {
+    position: absolute;
+    cursor: move;
+    user-select: none;
+    pointer-events: all;
+    transition: outline .1s;
+  }
+  .design-el.selected { outline: 2px dashed var(--accent); outline-offset: 3px; }
+  .design-el img { display: block; max-width: 100%; pointer-events: none; }
+  .design-el .text-el {
+    font-family: inherit; white-space: nowrap;
+    pointer-events: none;
+  }
+  /* resize handle */
+  .resize-handle {
+    position: absolute; bottom: -5px; right: -5px;
+    width: 12px; height: 12px; background: var(--accent);
+    border-radius: 2px; cursor: se-resize;
+  }
+
+  /* TEXT TOOL PANEL */
+  .text-input-row { display: flex; gap: 8px; margin-bottom: 10px; }
+  .text-input-row input, .text-input-row select {
+    background: var(--panel2); border: 1.5px solid var(--border);
+    color: var(--text); border-radius: 5px; padding: 7px 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none;
+    transition: border-color .15s; width: 100%;
+  }
+  .text-input-row input:focus, .text-input-row select:focus { border-color: var(--accent); }
+  .text-fonts select { width: 100%; }
+
+  .font-options { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .font-opt {
+    padding: 5px 10px; border-radius: 4px; border: 1.5px solid var(--border);
+    background: transparent; color: var(--text); font-size: 12px;
+    cursor: pointer; transition: all .15s;
+  }
+  .font-opt.active { border-color: var(--accent); color: var(--accent); }
+  .font-opt:hover { border-color: var(--muted); }
+
+  /* EMOJI / SHAPE GRID */
+  .emoji-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .emoji-btn {
+    width: 38px; height: 38px; border-radius: 6px; border: 1.5px solid var(--border);
+    background: var(--panel2); font-size: 20px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .15s;
+  }
+  .emoji-btn:hover { border-color: var(--accent); transform: scale(1.1); }
+
+  /* LAYERS PANEL */
+  .layers-list { display: flex; flex-direction: column; gap: 5px; }
+  .layer-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px; border-radius: 5px; border: 1.5px solid var(--border);
+    background: var(--panel2); cursor: pointer; transition: all .15s; font-size: 12px;
+  }
+  .layer-item.active { border-color: var(--accent); background: rgba(240,224,64,.07); }
+  .layer-item:hover { border-color: var(--muted); }
+  .layer-icon { font-size: 14px; }
+  .layer-name { flex: 1; color: var(--text); }
+  .layer-actions { display: flex; gap: 4px; }
+  .layer-action-btn {
+    background: none; border: none; color: var(--muted); cursor: pointer;
+    font-size: 14px; padding: 2px; transition: color .15s;
+  }
+  .layer-action-btn:hover { color: var(--accent); }
+
+  /* DESIGN PROPERTIES */
+  .prop-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .prop-label { font-size: 11px; color: var(--muted); width: 70px; flex-shrink: 0; }
+  .prop-slider {
+    flex: 1; appearance: none; height: 4px;
+    background: var(--border); border-radius: 2px; outline: none; cursor: pointer;
+  }
+  .prop-slider::-webkit-slider-thumb {
+    appearance: none; width: 14px; height: 14px;
+    border-radius: 50%; background: var(--accent); cursor: pointer;
+  }
+  .prop-value {
+    width: 38px; text-align: right; font-size: 12px; color: var(--accent); font-weight: 600;
+  }
+
+  /* COLOR PICKER MINI */
+  .mini-color-row { display: flex; flex-wrap: wrap; gap: 5px; }
+  .mini-color {
+    width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
+    border: 1.5px solid transparent; transition: all .1s;
+  }
+  .mini-color:hover { transform: scale(1.15); border-color: var(--muted); }
+  .mini-color.active { border-color: var(--accent); transform: scale(1.1); }
+
+  /* PRINT PREVIEW */
+  .print-info { background: var(--panel2); border-radius: 8px; padding: 12px; margin-top: 8px; }
+  .print-info-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
+  .print-info-row span:first-child { color: var(--muted); }
+  .print-info-row span:last-child { color: var(--text); font-weight: 500; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--accent); color: #111; padding: 10px 24px; border-radius: 6px;
+    font-weight: 600; font-size: 13px; transition: transform .3s ease; z-index: 999;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.75);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200; opacity: 0; pointer-events: none; transition: opacity .2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    padding: 28px; width: 420px; max-width: 95vw;
+  }
+  .modal h2 { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--accent); margin-bottom: 16px; }
+  .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+  .modal-field { display: flex; flex-direction: column; gap: 5px; }
+  .modal-field label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
+  .modal-field input, .modal-field select {
+    background: var(--panel2); border: 1.5px solid var(--border);
+    color: var(--text); border-radius: 6px; padding: 8px 12px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none;
+  }
+  .modal-field input:focus { border-color: var(--accent); }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+  /* UNDO/REDO */
+  .history-btns { display: flex; gap: 6px; }
+  .history-btn {
+    width: 32px; height: 32px; border-radius: 6px; border: 1.5px solid var(--border);
+    background: transparent; color: var(--muted); font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: all .15s;
+  }
+  .history-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .history-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+  /* ZOOM */
+  .zoom-controls { display: flex; align-items: center; gap: 6px; }
+  .zoom-label { font-size: 12px; color: var(--muted); min-width: 38px; text-align: center; }
+
+  /* CANVAS BORDER GUIDE */
+  .print-area-guide {
+    position: absolute;
+    top: 22%; left: 22%; width: 56%; height: 46%;
+    border: 1.5px dashed rgba(240,224,64,.25);
+    border-radius: 2px; pointer-events: none;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* PATTERN FILL */
+  .pattern-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .pattern-btn {
+    aspect-ratio: 1; border-radius: 5px; border: 1.5px solid var(--border);
+    cursor: pointer; transition: all .15s; overflow: hidden;
+    display: flex; align-items: center; justify-content: center; font-size: 11px;
+    color: var(--muted); background: var(--panel2);
+  }
+  .pattern-btn:hover, .pattern-btn.active { border-color: var(--accent); }
+
+  @media (max-width: 900px) {
+    .workspace { grid-template-columns: 240px 1fr; }
+    .side-panel.right { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Tee<span>Studio</span></div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <div class="history-btns">
+      <button class="history-btn" id="undoBtn" title="Geri Al" disabled>↩</button>
+      <button class="history-btn" id="redoBtn" title="İleri Al" disabled>↪</button>
+    </div>
+    <div class="zoom-controls">
+      <button class="btn btn-outline btn-sm" id="zoomOut">−</button>
+      <span class="zoom-label" id="zoomLabel">100%</span>
+      <button class="btn btn-outline btn-sm" id="zoomIn">+</button>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-outline" onclick="clearAll()">🗑 Temizle</button>
+    <button class="btn btn-outline" onclick="openModal()">📦 Sipariş Ver</button>
+    <button class="btn btn-accent" onclick="exportDesign()">⬇ İndir</button>
+  </div>
+</header>
+
+<div class="workspace">
+
+  <!-- LEFT PANEL -->
+  <div class="side-panel">
+    <div class="panel-section">
+      <div class="panel-section-title">Tişört Rengi</div>
+      <div class="shirt-colors" id="shirtColors"></div>
+    </div>
+    <div class="panel-section">
+      <div class="panel-section-title">Beden</div>
+      <div class="size-grid">
+        <button class="size-btn" onclick="selectSize(this,'XS')">XS</button>
+        <button class="size-btn active" onclick="selectSize(this,'S')">S</button>
+        <button class="size-btn" onclick="selectSize(this,'M')">M</button>
+        <button class="size-btn" onclick="selectSize(this,'L')">L</button>
+        <button class="size-btn" onclick="selectSize(this,'XL')">XL</button>
+        <button class="size-btn" onclick="selectSize(this,'2XL')">2XL</button>
+      </div>
+    </div>
+    <div class="tool-tabs">
+      <div class="tool-tab active" onclick="switchTab('text',this)">Metin</div>
+      <div class="tool-tab" onclick="switchTab('emoji',this)">Emoji</div>
+      <div class="tool-tab" onclick="switchTab('shape',this)">Şekil</div>
+      <div class="tool-tab" onclick="switchTab('upload',this)">Yükle</div>
+    </div>
+    <!-- TEXT TAB -->
+    <div id="tab-text" class="panel-section" style="flex:1;">
+      <div class="panel-section-title">Metin Ekle</div>
+      <div class="text-input-row">
+        <input type="text" id="textInput" placeholder="Metni yaz..." style="width:100%;">
+      </div>
+      <div class="font-options" id="fontOptions"></div>
+      <div style="margin-top:10px;">
+        <div class="panel-section-title">Boyut</div>
+        <div class="prop-row">
+          <input type="range" class="prop-slider" id="fontSizeSlider" min="12" max="72" value="28">
+          <span class="prop-value" id="fontSizeVal">28</span>
+        </div>
+      </div>
+      <div style="margin-top:8px;">
+        <div class="panel-section-title">Metin Rengi</div>
+        <div class="mini-color-row" id="textColors"></div>
+      </div>
+      <button class="btn btn-accent" style="width:100%;margin-top:12px;" onclick="addText()">+ Metin Ekle</button>
+    </div>
+    <!-- EMOJI TAB -->
+    <div id="tab-emoji" class="panel-section" style="display:none;flex:1;">
+      <div class="panel-section-title">Emoji & Sembol</div>
+      <div class="emoji-grid" id="emojiGrid"></div>
+    </div>
+    <!-- SHAPE TAB -->
+    <div id="tab-shape" class="panel-section" style="display:none;flex:1;">
+      <div class="panel-section-title">Şekil Ekle</div>
+      <div class="emoji-grid" id="shapeGrid"></div>
+    </div>
+    <!-- UPLOAD TAB -->
+    <div id="tab-upload" class="panel-section" style="display:none;flex:1;">
+      <div class="panel-section-title">Görsel Yükle</div>
+      <label style="display:block;width:100%;padding:20px;border:2px dashed var(--border);border-radius:8px;text-align:center;cursor:pointer;transition:border-color .15s;" id="uploadLabel">
+        <div style="font-size:28px;margin-bottom:6px;">📁</div>
+        <div style="font-size:12px;color:var(--muted);">PNG, JPG, SVG yükle</div>
+        <input type="file" accept="image/*" style="display:none;" onchange="uploadImage(this)">
+      </label>
+    </div>
+  </div>
+
+  <!-- CANVAS AREA -->
+  <div class="canvas-area" id="canvasArea">
+    <div class="view-toggle">
+      <button class="view-btn active" onclick="setView('front',this)">Ön</button>
+      <button class="view-btn" onclick="setView('back',this)">Arka</button>
+    </div>
+    <div class="shirt-canvas-wrapper" id="shirtWrapper" style="transform-origin:center;transition:transform .2s;">
+      <!-- Shirt SVG -->
+      <svg class="shirt-svg" id="shirtSvg" viewBox="0 0 320 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Body -->
+        <path id="shirtBody" d="M80 60 L40 100 L10 85 L30 160 L55 155 L55 350 L265 350 L265 155 L290 160 L310 85 L280 100 L240 60 Q220 45 200 44 L200 44 Q190 38 160 38 Q130 38 120 44 L120 44 Q100 45 80 60Z" fill="#f5f5f0"/>
+        <!-- Collar -->
+        <path id="shirtCollar" d="M120 44 Q130 38 160 38 Q190 38 200 44 Q195 65 160 68 Q125 65 120 44Z" fill="#e8e8e2"/>
+        <!-- Collar inner shadow -->
+        <path d="M125 47 Q135 42 160 42 Q185 42 195 47 Q190 62 160 65 Q130 62 125 47Z" fill="#d8d8d2" opacity=".4"/>
+        <!-- Sleeve left -->
+        <path id="sleeveL" d="M80 60 L40 100 L10 85 L30 140 L55 135 L55 80Z" fill="#eeeee8"/>
+        <!-- Sleeve right -->
+        <path id="sleeveR" d="M240 60 L280 100 L310 85 L290 140 L265 135 L265 80Z" fill="#eeeee8"/>
+        <!-- Subtle folds -->
+        <path d="M55 140 Q80 160 80 230 Q80 280 90 350" stroke="#00000010" stroke-width="1.5" fill="none"/>
+        <path d="M265 140 Q240 160 240 230 Q240 280 230 350" stroke="#00000010" stroke-width="1.5" fill="none"/>
+        <path d="M100 350 Q120 340 160 342 Q200 340 220 350" stroke="#00000010" stroke-width="1" fill="none"/>
+        <!-- Outline -->
+        <path d="M80 60 L40 100 L10 85 L30 160 L55 155 L55 350 L265 350 L265 155 L290 160 L310 85 L280 100 L240 60 Q220 45 200 44 L200 44 Q190 38 160 38 Q130 38 120 44 L120 44 Q100 45 80 60Z" stroke="#00000018" stroke-width="1.5" fill="none"/>
+      </svg>
+      <!-- Print area guide -->
+      <div class="print-area-guide"></div>
+      <!-- Design layer -->
+      <div class="design-layer" id="designLayer"></div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);text-align:center;z-index:2;">
+      Tasarım alanı (kesik çizgi = baskı bölgesi)
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="side-panel right">
+    <div class="panel-section">
+      <div class="panel-section-title">Öğe Özellikleri</div>
+      <div id="noSelection" style="font-size:12px;color:var(--muted);text-align:center;padding:10px 0;">
+        Bir öğe seçin
+      </div>
+      <div id="selectionProps" style="display:none;">
+        <div class="prop-row">
+          <span class="prop-label">Büyüklük</span>
+          <input type="range" class="prop-slider" id="sizeSlider" min="20" max="200" value="80" oninput="updateSelectedSize(this.value)">
+          <span class="prop-value" id="sizeVal">80</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-label">Döndür</span>
+          <input type="range" class="prop-slider" id="rotSlider" min="-180" max="180" value="0" oninput="updateSelectedRot(this.value)">
+          <span class="prop-value" id="rotVal">0°</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-label">Opaklık</span>
+          <input type="range" class="prop-slider" id="opacSlider" min="10" max="100" value="100" oninput="updateSelectedOpac(this.value)">
+          <span class="prop-value" id="opacVal">100%</span>
+        </div>
+        <div style="margin-bottom:10px;">
+          <div class="panel-section-title" style="margin-bottom:8px;">Renk (Metin/Şekil)</div>
+          <div class="mini-color-row" id="elColors"></div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-outline btn-sm" style="flex:1" onclick="duplicateSelected()">⧉ Kopyala</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteSelected()">✕ Sil</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel-section">
+      <div class="panel-section-title">Katmanlar</div>
+      <div class="layers-list" id="layersList"></div>
+    </div>
+    <div class="panel-section">
+      <div class="panel-section-title">Baskı Bilgisi</div>
+      <div class="print-info">
+        <div class="print-info-row"><span>Yöntem</span><span id="printMethod">DTG Dijital</span></div>
+        <div class="print-info-row"><span>Beden</span><span id="printSize">S</span></div>
+        <div class="print-info-row"><span>Renk</span><span id="printColor">Beyaz</span></div>
+        <div class="print-info-row"><span>Öğe sayısı</span><span id="printCount">0</span></div>
+        <div class="print-info-row"><span>Tahmini fiyat</span><span id="printPrice" style="color:var(--accent);">₺149</span></div>
+      </div>
+    </div>
+    <div class="panel-section" style="flex:1;">
+      <div class="panel-section-title">Baskı Yöntemi</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <label style="font-size:12px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="radio" name="pmethod" value="DTG Dijital" checked onchange="setPrintMethod(this.value)"> DTG Dijital Baskı
+        </label>
+        <label style="font-size:12px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="radio" name="pmethod" value="Serigrafi" onchange="setPrintMethod(this.value)"> Serigrafi
+        </label>
+        <label style="font-size:12px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="radio" name="pmethod" value="Transfer" onchange="setPrintMethod(this.value)"> Isı Transfer
+        </label>
+        <label style="font-size:12px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="radio" name="pmethod" value="İşleme" onchange="setPrintMethod(this.value)"> İşleme (Nakış)
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER MODAL -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal">
+    <h2>Sipariş Ver</h2>
+    <div class="modal-grid">
+      <div class="modal-field" style="grid-column:span 2;">
+        <label>Ad Soyad</label>
+        <input type="text" placeholder="İsim Soyisim">
+      </div>
+      <div class="modal-field">
+        <label>Adet</label>
+        <input type="number" value="1" min="1">
+      </div>
+      <div class="modal-field">
+        <label>Beden</label>
+        <select><option>S</option><option>M</option><option>L</option><option>XL</option></select>
+      </div>
+      <div class="modal-field" style="grid-column:span 2;">
+        <label>Teslimat Adresi</label>
+        <input type="text" placeholder="Şehir, İlçe">
+      </div>
+    </div>
+    <div style="background:var(--panel2);border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;">
+      <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Ürün</span><span>₺149</span></div>
+      <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Kargo</span><span>₺29</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:700;margin-top:8px;color:var(--accent);"><span>Toplam</span><span>₺178</span></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">İptal</button>
+      <button class="btn btn-accent" onclick="submitOrder()">✓ Onayla</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const SHIRT_COLORS = [
+  { name:'Beyaz', hex:'#f5f5f0' },
+  { name:'Siyah', hex:'#1a1a1a' },
+  { name:'Lacivert', hex:'#1d2e5a' },
+  { name:'Kırmızı', hex:'#c0392b' },
+  { name:'Zeytin', hex:'#5d6a2e' },
+  { name:'Gri', hex:'#8a8a8a' },
+  { name:'Bej', hex:'#d4b896' },
+  { name:'Mor', hex:'#6c3483' },
+  { name:'Turuncu', hex:'#e67e22' },
+  { name:'Pembe', hex:'#e8a0b0' },
+  { name:'Mavi', hex:'#2980b9' },
+  { name:'Bordo', hex:'#7b241c' },
+];
+const FONTS = ['Bebas Neue','Georgia','Courier New','Impact','Comic Sans MS','DM Sans','Times New Roman','Verdana'];
+const EMOJIS = ['🔥','⭐','💥','👑','🎯','🌊','🦋','🎸','💎','🌙','☀️','🎨','🏆','⚡','🌸','🎭','🚀','🌈','❤️','🎪','🤘','💫'];
+const SHAPES = ['■','▲','●','★','♦','▶','⬟','⬡','✦','✚','✕','⊕'];
+const TEXT_COLORS = ['#ffffff','#1a1a1a','#f0e040','#ff5c3a','#2980b9','#e8a0b0','#5d6a2e','#e67e22','#6c3483','#c0392b','#00bcd4','#ff9800'];
+const EL_COLORS = [...TEXT_COLORS];
+
+let currentShirtColor = SHIRT_COLORS[0];
+let selectedSize = 'S';
+let currentView = 'front';
+let elements = []; // {id, type, content, x, y, w, h, rot, opac, color, font, fontSize, zIndex}
+let selectedId = null;
+let nextId = 1;
+let undoStack = [];
+let redoStack = [];
+let zoom = 1;
+let dragState = null;
+let resizeState = null;
+let selectedFont = FONTS[0];
+let selectedTextColor = '#1a1a1a';
+let selectedFontSize = 28;
+let printMethod = 'DTG Dijital';
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  // Shirt colors
+  const sc = document.getElementById('shirtColors');
+  SHIRT_COLORS.forEach((c,i) => {
+    const d = document.createElement('div');
+    d.className = 'color-swatch' + (i===0?' active':'');
+    d.style.background = c.hex;
+    d.style.border = c.hex === '#f5f5f0' ? '2px solid #ccc' : '2px solid transparent';
+    d.title = c.name;
+    d.onclick = () => setShirtColor(c, d);
+    sc.appendChild(d);
+  });
+
+  // Fonts
+  const fo = document.getElementById('fontOptions');
+  FONTS.forEach((f,i) => {
+    const b = document.createElement('button');
+    b.className = 'font-opt' + (i===0?' active':'');
+    b.style.fontFamily = f;
+    b.textContent = f.split(' ')[0];
+    b.title = f;
+    b.onclick = () => { selectedFont = f; document.querySelectorAll('.font-opt').forEach(x=>x.classList.remove('active')); b.classList.add('active'); };
+    fo.appendChild(b);
+  });
+
+  // Text colors
+  buildColorRow('textColors', TEXT_COLORS, 1, c => { selectedTextColor = c; });
+  buildColorRow('elColors', EL_COLORS, 0, c => updateSelectedColor(c));
+
+  // Emojis
+  const eg = document.getElementById('emojiGrid');
+  EMOJIS.forEach(e => {
+    const b = document.createElement('button');
+    b.className = 'emoji-btn'; b.textContent = e;
+    b.onclick = () => addEmoji(e);
+    eg.appendChild(b);
+  });
+
+  // Shapes
+  const sg = document.getElementById('shapeGrid');
+  SHAPES.forEach(s => {
+    const b = document.createElement('button');
+    b.className = 'emoji-btn'; b.textContent = s;
+    b.style.fontSize = '22px';
+    b.onclick = () => addShape(s);
+    sg.appendChild(b);
+  });
+
+  // Font size slider
+  const fss = document.getElementById('fontSizeSlider');
+  fss.oninput = () => { selectedFontSize = +fss.value; document.getElementById('fontSizeVal').textContent = fss.value; };
+
+  // Zoom
+  document.getElementById('zoomIn').onclick = () => setZoom(Math.min(zoom+.1,2));
+  document.getElementById('zoomOut').onclick = () => setZoom(Math.max(zoom-.1,.4));
+
+  // Undo/redo
+  document.getElementById('undoBtn').onclick = undo;
+  document.getElementById('redoBtn').onclick = redo;
+
+  // Click outside to deselect
+  document.getElementById('canvasArea').addEventListener('mousedown', e => {
+    if (e.target === document.getElementById('designLayer') || e.target === document.getElementById('canvasArea') || e.target.closest('.shirt-canvas-wrapper') === null) {
+      deselect();
+    }
+  });
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+
+  renderAll();
+}
+
+function buildColorRow(id, colors, activeIdx, cb) {
+  const el = document.getElementById(id);
+  el.innerHTML = '';
+  colors.forEach((c,i) => {
+    const d = document.createElement('div');
+    d.className = 'mini-color' + (i===activeIdx?' active':'');
+    d.style.background = c;
+    d.style.border = (c==='#ffffff'||c==='#f5f5f0') ? '1.5px solid #555' : '1.5px solid transparent';
+    d.onclick = () => {
+      el.querySelectorAll('.mini-color').forEach(x=>x.classList.remove('active'));
+      d.classList.add('active');
+      cb(c);
+    };
+    el.appendChild(d);
+  });
+}
+
+// ============================================================
+// SHIRT COLOR
+// ============================================================
+function setShirtColor(c, el) {
+  currentShirtColor = c;
+  document.querySelectorAll('.color-swatch').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  const paths = ['shirtBody','sleeveL','sleeveR'];
+  paths.forEach(id => {
+    const p = document.getElementById(id);
+    if (p) p.style.fill = c.hex;
+  });
+  const collar = document.getElementById('shirtCollar');
+  if (collar) {
+    const rgb = hexToRgb(c.hex);
+    const darker = `rgb(${Math.max(0,rgb.r-20)},${Math.max(0,rgb.g-20)},${Math.max(0,rgb.b-20)})`;
+    collar.style.fill = darker;
+  }
+  document.getElementById('printColor').textContent = c.name;
+  updatePrice();
+}
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return {r,g,b};
+}
+
+// ============================================================
+// SIZE / VIEW
+// ============================================================
+function selectSize(btn, size) {
+  selectedSize = size;
+  document.querySelectorAll('.size-btn').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('printSize').textContent = size;
+}
+
+function setView(v, btn) {
+  currentView = v;
+  document.querySelectorAll('.view-btn').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+  showToast('Görünüm: ' + (v==='front'?'Ön':'Arka'));
+}
+
+// ============================================================
+// ZOOM
+// ============================================================
+function setZoom(z) {
+  zoom = z;
+  document.getElementById('shirtWrapper').style.transform = `scale(${z})`;
+  document.getElementById('zoomLabel').textContent = Math.round(z*100)+'%';
+}
+
+// ============================================================
+// TAB SWITCH
+// ============================================================
+function switchTab(tab, el) {
+  ['text','emoji','shape','upload'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tool-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ============================================================
+// ADD ELEMENTS
+// ============================================================
+function addText() {
+  const val = document.getElementById('textInput').value.trim();
+  if (!val) { showToast('Önce bir metin yazın!'); return; }
+  saveUndo();
+  const el = {
+    id: nextId++, type: 'text', content: val,
+    x: 90, y: 130, w: null, h: null,
+    rot: 0, opac: 100,
+    color: selectedTextColor, font: selectedFont, fontSize: selectedFontSize,
+    zIndex: elements.length
+  };
+  elements.push(el);
+  document.getElementById('textInput').value = '';
+  renderAll();
+  selectEl(el.id);
+  showToast('Metin eklendi!');
+}
+
+function addEmoji(e) {
+  saveUndo();
+  const el = { id:nextId++, type:'emoji', content:e, x:110, y:130, w:60, h:60, rot:0, opac:100, color:'', font:'', fontSize:40, zIndex:elements.length };
+  elements.push(el);
+  renderAll();
+  selectEl(el.id);
+}
+
+function addShape(s) {
+  saveUndo();
+  const el = { id:nextId++, type:'shape', content:s, x:120, y:140, w:60, h:60, rot:0, opac:100, color:'#1a1a1a', font:'', fontSize:48, zIndex:elements.length };
+  elements.push(el);
+  renderAll();
+  selectEl(el.id);
+}
+
+function uploadImage(input) {
+  if (!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    saveUndo();
+    const el = { id:nextId++, type:'image', content:e.target.result, x:90, y:110, w:120, h:120, rot:0, opac:100, color:'', font:'', fontSize:0, zIndex:elements.length };
+    elements.push(el);
+    renderAll();
+    selectEl(el.id);
+    showToast('Görsel yüklendi!');
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderAll() {
+  const layer = document.getElementById('designLayer');
+  layer.innerHTML = '';
+  elements.sort((a,b)=>a.zIndex-b.zIndex).forEach(el => {
+    const div = document.createElement('div');
+    div.className = 'design-el' + (el.id===selectedId?' selected':'');
+    div.dataset.id = el.id;
+    div.style.cssText = `
+      left:${el.x}px; top:${el.y}px;
+      transform: rotate(${el.rot}deg);
+      opacity: ${el.opac/100};
+      z-index: ${el.zIndex+1};
+    `;
+
+    if (el.type === 'text') {
+      div.style.width = 'auto';
+      const span = document.createElement('span');
+      span.className = 'text-el';
+      span.textContent = el.content;
+      span.style.cssText = `font-family:'${el.font}',sans-serif;font-size:${el.fontSize}px;color:${el.color};display:block;`;
+      div.appendChild(span);
+    } else if (el.type === 'emoji' || el.type === 'shape') {
+      div.style.width = el.w+'px';
+      div.style.height = el.h+'px';
+      const span = document.createElement('span');
+      span.className = 'text-el';
+      span.textContent = el.content;
+      span.style.cssText = `font-size:${el.fontSize}px;display:block;line-height:1;${el.color?'color:'+el.color:''}`;
+      div.appendChild(span);
+    } else if (el.type === 'image') {
+      div.style.width = el.w+'px';
+      div.style.height = el.h+'px';
+      const img = document.createElement('img');
+      img.src = el.content;
+      img.style.cssText = `width:100%;height:100%;object-fit:contain;display:block;`;
+      div.appendChild(img);
+    }
+
+    if (el.id === selectedId) {
+      const rh = document.createElement('div');
+      rh.className = 'resize-handle';
+      rh.addEventListener('mousedown', e => { e.stopPropagation(); startResize(e, el); });
+      div.appendChild(rh);
+    }
+
+    div.addEventListener('mousedown', e => { if (!e.target.classList.contains('resize-handle')) startDrag(e, el); });
+    layer.appendChild(div);
+  });
+
+  updateLayers();
+  updateSelectionPanel();
+  updatePrintInfo();
+}
+
+// ============================================================
+// DRAG
+// ============================================================
+function startDrag(e, el) {
+  e.preventDefault();
+  selectEl(el.id);
+  const wrapper = document.getElementById('shirtWrapper').getBoundingClientRect();
+  dragState = {
+    el,
+    startX: e.clientX,
+    startY: e.clientY,
+    origX: el.x,
+    origY: el.y,
+    wrapperLeft: wrapper.left,
+    wrapperTop: wrapper.top
+  };
+}
+
+function startResize(e, el) {
+  e.preventDefault();
+  resizeState = {
+    el,
+    startX: e.clientX,
+    startY: e.clientY,
+    origW: el.w || 60,
+    origH: el.h || 60,
+    origFs: el.fontSize
+  };
+}
+
+function onMouseMove(e) {
+  if (dragState) {
+    const dx = (e.clientX - dragState.startX) / zoom;
+    const dy = (e.clientY - dragState.startY) / zoom;
+    dragState.el.x = dragState.origX + dx;
+    dragState.el.y = dragState.origY + dy;
+    renderAll();
+  }
+  if (resizeState) {
+    const dx = (e.clientX - resizeState.startX) / zoom;
+    const dy = (e.clientY - resizeState.startY) / zoom;
+    const delta = Math.max(dx, dy);
+    const el = resizeState.el;
+    if (el.type === 'text') {
+      el.fontSize = Math.max(8, resizeState.origFs + delta * 0.4);
+    } else {
+      el.w = Math.max(20, resizeState.origW + delta);
+      el.h = Math.max(20, resizeState.origH + delta);
+      el.fontSize = Math.max(8, resizeState.origFs + delta * 0.4);
+    }
+    renderAll();
+  }
+}
+
+function onMouseUp() {
+  if (dragState || resizeState) saveUndo();
+  dragState = null;
+  resizeState = null;
+}
+
+// ============================================================
+// SELECT / DESELECT
+// ============================================================
+function selectEl(id) {
+  selectedId = id;
+  renderAll();
+  updateSelectionPanel();
+}
+
+function deselect() {
+  selectedId = null;
+  renderAll();
+}
+
+function updateSelectionPanel() {
+  const el = elements.find(e=>e.id===selectedId);
+  document.getElementById('noSelection').style.display = el ? 'none' : 'block';
+  document.getElementById('selectionProps').style.display = el ? 'block' : 'none';
+  if (el) {
+    document.getElementById('rotSlider').value = el.rot;
+    document.getElementById('rotVal').textContent = Math.round(el.rot)+'°';
+    document.getElementById('opacSlider').value = el.opac;
+    document.getElementById('opacVal').textContent = el.opac+'%';
+    const size = el.w || el.fontSize || 60;
+    document.getElementById('sizeSlider').value = Math.min(200, size);
+    document.getElementById('sizeVal').textContent = Math.round(size);
+  }
+}
+
+// ============================================================
+// SELECTION PROPS
+// ============================================================
+function updateSelectedSize(v) {
+  const el = elements.find(e=>e.id===selectedId); if (!el) return;
+  document.getElementById('sizeVal').textContent = v;
+  if (el.type === 'text') { el.fontSize = +v; }
+  else { const ratio = +v / (el.w||60); el.w = +v; el.h = Math.round((el.h||60)*ratio); el.fontSize = +v * 0.6; }
+  renderAll();
+}
+function updateSelectedRot(v) {
+  const el = elements.find(e=>e.id===selectedId); if (!el) return;
+  el.rot = +v;
+  document.getElementById('rotVal').textContent = v+'°';
+  renderAll();
+}
+function updateSelectedOpac(v) {
+  const el = elements.find(e=>e.id===selectedId); if (!el) return;
+  el.opac = +v;
+  document.getElementById('opacVal').textContent = v+'%';
+  renderAll();
+}
+function updateSelectedColor(c) {
+  const el = elements.find(e=>e.id===selectedId); if (!el) return;
+  el.color = c;
+  renderAll();
+}
+function deleteSelected() {
+  if (!selectedId) return;
+  saveUndo();
+  elements = elements.filter(e=>e.id!==selectedId);
+  selectedId = null;
+  renderAll();
+  showToast('Öğe silindi');
+}
+function duplicateSelected() {
+  const el = elements.find(e=>e.id===selectedId); if (!el) return;
+  saveUndo();
+  const clone = {...el, id:nextId++, x:el.x+15, y:el.y+15, zIndex:elements.length};
+  elements.push(clone);
+  selectEl(clone.id);
+  renderAll();
+  showToast('Kopyalandı');
+}
+
+// ============================================================
+// LAYERS
+// ============================================================
+function updateLayers() {
+  const list = document.getElementById('layersList');
+  list.innerHTML = '';
+  [...elements].reverse().forEach(el => {
+    const d = document.createElement('div');
+    d.className = 'layer-item' + (el.id===selectedId?' active':'');
+    const icon = el.type==='text' ? '🔤' : el.type==='image' ? '🖼' : el.type==='emoji' ? '😊' : '⬛';
+    const name = el.type==='text' ? el.content.substring(0,12) : el.type==='image' ? 'Görsel' : el.content;
+    d.innerHTML = `<span class="layer-icon">${icon}</span><span class="layer-name">${name}</span>
+      <div class="layer-actions">
+        <button class="layer-action-btn" title="Yukarı" onclick="moveLayer(${el.id},1)">↑</button>
+        <button class="layer-action-btn" title="Aşağı" onclick="moveLayer(${el.id},-1)">↓</button>
+      </div>`;
+    d.onclick = e => { if(!e.target.classList.contains('layer-action-btn')) selectEl(el.id); };
+    list.appendChild(d);
+  });
+}
+
+function moveLayer(id, dir) {
+  const idx = elements.findIndex(e=>e.id===id);
+  if (dir>0 && idx<elements.length-1) {
+    [elements[idx].zIndex, elements[idx+1].zIndex] = [elements[idx+1].zIndex, elements[idx].zIndex];
+  } else if (dir<0 && idx>0) {
+    [elements[idx].zIndex, elements[idx-1].zIndex] = [elements[idx-1].zIndex, elements[idx].zIndex];
+  }
+  renderAll();
+}
+
+// ============================================================
+// PRINT INFO / PRICE
+// ============================================================
+function updatePrintInfo() {
+  document.getElementById('printCount').textContent = elements.length;
+  updatePrice();
+}
+function updatePrice() {
+  const base = 149;
+  const extra = elements.length > 3 ? (elements.length-3)*10 : 0;
+  document.getElementById('printPrice').textContent = '₺'+(base+extra);
+}
+function setPrintMethod(v) {
+  printMethod = v;
+  document.getElementById('printMethod').textContent = v;
+}
+
+// ============================================================
+// UNDO / REDO
+// ============================================================
+function saveUndo() {
+  undoStack.push(JSON.stringify(elements));
+  redoStack = [];
+  document.getElementById('undoBtn').disabled = false;
+  document.getElementById('redoBtn').disabled = true;
+}
+function undo() {
+  if (!undoStack.length) return;
+  redoStack.push(JSON.stringify(elements));
+  elements = JSON.parse(undoStack.pop());
+  selectedId = null;
+  renderAll();
+  document.getElementById('undoBtn').disabled = undoStack.length===0;
+  document.getElementById('redoBtn').disabled = false;
+  showToast('Geri alındı');
+}
+function redo() {
+  if (!redoStack.length) return;
+  undoStack.push(JSON.stringify(elements));
+  elements = JSON.parse(redoStack.pop());
+  selectedId = null;
+  renderAll();
+  document.getElementById('redoBtn').disabled = redoStack.length===0;
+  document.getElementById('undoBtn').disabled = false;
+  showToast('İleri alındı');
+}
+
+// ============================================================
+// CLEAR
+// ============================================================
+function clearAll() {
+  if (!elements.length) return;
+  saveUndo();
+  elements = [];
+  selectedId = null;
+  renderAll();
+  showToast('Tasarım temizlendi');
+}
+
+// ============================================================
+// EXPORT
+// ============================================================
+function exportDesign() {
+  // Simple canvas export
+  const wrapper = document.getElementById('shirtWrapper');
+  // Draw shirt + elements to canvas
+  const canvas = document.createElement('canvas');
+  canvas.width = 640; canvas.height = 760;
+  const ctx = canvas.getContext('2d');
+  // Background
+  ctx.fillStyle = '#131314';
+  ctx.fillRect(0,0,640,760);
+  // Draw shirt shape
+  ctx.save();
+  ctx.scale(2, 2);
+  ctx.fillStyle = currentShirtColor.hex;
+  // Simple shirt silhouette
+  ctx.beginPath();
+  ctx.moveTo(80,60); ctx.lineTo(40,100); ctx.lineTo(10,85); ctx.lineTo(30,160); ctx.lineTo(55,155); ctx.lineTo(55,350); ctx.lineTo(265,350); ctx.lineTo(265,155); ctx.lineTo(290,160); ctx.lineTo(310,85); ctx.lineTo(280,100); ctx.lineTo(240,60);
+  ctx.quadraticCurveTo(220,45,200,44);
+  ctx.quadraticCurveTo(190,38,160,38);
+  ctx.quadraticCurveTo(130,38,120,44);
+  ctx.quadraticCurveTo(100,45,80,60);
+  ctx.closePath();
+  ctx.fill();
+
+  // Draw text elements
+  elements.forEach(el => {
+    ctx.save();
+    ctx.translate(el.x + (el.w||0)/2, el.y + (el.h||0)/2);
+    ctx.rotate(el.rot * Math.PI/180);
+    ctx.globalAlpha = el.opac/100;
+    if (el.type==='text') {
+      ctx.font = `${el.fontSize}px '${el.font}', sans-serif`;
+      ctx.fillStyle = el.color || '#111';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(el.content, -ctx.measureText(el.content).width/2, 0);
+    } else if (el.type==='emoji'||el.type==='shape') {
+      ctx.font = `${el.fontSize}px serif`;
+      if (el.color) ctx.fillStyle = el.color;
+      ctx.textBaseline = 'middle';
+      ctx.fillText(el.content, -(el.w||40)/2, 0);
+    }
+    ctx.restore();
+  });
+  ctx.restore();
+
+  const a = document.createElement('a');
+  a.download = 'tisort-tasarim.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+  showToast('Tasarım indirildi!');
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal() {
+  document.getElementById('orderModal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('orderModal').classList.remove('open');
+}
+function submitOrder() {
+  closeModal();
+  showToast('🎉 Siparişiniz alındı!');
+}
+document.getElementById('orderModal').addEventListener('click', e => { if(e.target===document.getElementById('orderModal')) closeModal(); });
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ============================================================
+// START
+// ============================================================
+init();
+</script>
+</body>
+</html>
